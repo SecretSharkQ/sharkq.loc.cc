@@ -202,18 +202,24 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   var langmenu = document.getElementById('langmenu');
   function applyLang(animate){
     var els = document.querySelectorAll('[data-i18n]');
+    var touched = [];
     for (var i = 0; i < els.length; i++) {
       var k = els[i].dataset.i18n;
-      if (I18N[lang][k]) els[i].textContent = I18N[lang][k];
+      if (I18N[lang][k]) { els[i].textContent = I18N[lang][k]; touched.push(els[i]); }
     }
     document.documentElement.lang = lang;
     lb.textContent = lang.toUpperCase();
     var opts = langmenu.querySelectorAll('button');
     for (var j = 0; j < opts.length; j++) opts[j].classList.toggle('act', opts[j].dataset.lang === lang);
     if (animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelector('.card').animate(
-        [{opacity:.3, transform:'translateY(6px)'}, {opacity:1, transform:'none'}],
-        {duration:280, easing:'ease-out'});
+      for (var m = 0; m < touched.length; m++) {
+        (function(el, d){
+          el.animate(
+            [{opacity: 0, transform: 'translateY(9px)'},
+             {opacity: 1, transform: 'none'}],
+            {duration: 340, delay: d * 45, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'backwards'});
+        })(touched[m], m);
+      }
     }
   }
   lb.addEventListener('click', function(e){
