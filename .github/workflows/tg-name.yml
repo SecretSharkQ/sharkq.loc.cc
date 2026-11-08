@@ -2,7 +2,7 @@ name: Sync Telegram name
 
 on:
   schedule:
-    - cron: '* * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -33,15 +33,19 @@ jobs:
             git push
           fi
 
-      - name: Push name.json to Netlify
+      - name: Push name.json + index.html to Netlify
         env:
           NLT: ${{ secrets.NLT }}
         run: |
           SITE_ID="c8166aa3-ade8-4e51-adc5-15e0f5f7817e"
-          DIGEST=$(sha1sum name.json | cut -d' ' -f1)
+          D1=$(sha1sum name.json | cut -d' ' -f1)
+          D2=$(sha1sum index.html | cut -d' ' -f1)
           DID=$(curl -s -X POST -H "Authorization: Bearer $NLT" -H 'Content-Type: application/json' \
-            -d "{\"files\": {\"/name.json\": \"$DIGEST\"}}" \
+            -d "{\"files\": {\"/name.json\": \"$D1\", \"/index.html\": \"$D2\"}}" \
             "https://api.netlify.com/api/v1/sites/$SITE_ID/deploys" | python3 -c "import json,sys;print(json.load(sys.stdin)['id'])")
           curl -s -X PUT -H "Authorization: Bearer $NLT" -H 'Content-Type: application/octet-stream' \
             --data-binary @name.json \
             "https://api.netlify.com/api/v1/deploys/$DID/files/name.json"
+          curl -s -X PUT -H "Authorization: Bearer $NLT" -H 'Content-Type: application/octet-stream' \
+            --data-binary @index.html \
+            "https://api.netlify.com/api/v1/deploys/$DID/files/index.html"
