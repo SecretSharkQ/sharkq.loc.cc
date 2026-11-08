@@ -98,7 +98,7 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
     </div>
   </div>
 
-  <div class="ava"><img src="https://unavatar.io/telegram/secretsharkq" alt="Аватар из Telegram" referrerpolicy="no-referrer"></div>
+  <div class="ava"><img src="https://unavatar.io/telegram/secretsharkq" alt="" referrerpolicy="no-referrer"></div>
   <h1 id="pname">шеф | новогодни</h1>
   <button class="user" id="nick" type="button" data-copy="@SecretSharkQ">@SecretSharkQ</button>
 
@@ -168,7 +168,24 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
     });
   }
   function pullAvatar(){
-    avaImg.src = 'https://unavatar.io/telegram/secretsharkq?t=' + Date.now();
+    var AVA_PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="112" height="112">' +
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+      '<stop offset="0" stop-color="#1c86c6"/><stop offset="1" stop-color="#0d1117"/>' +
+      '</linearGradient></defs><rect width="112" height="112" fill="url(#g)"/>' +
+      '<text x="56" y="72" font-family="Segoe UI,sans-serif" font-size="46" font-weight="600" fill="#fff" text-anchor="middle">S</text></svg>');
+    var set = function(src){ avaImg.src = src; };
+    var trySrc = function(src, onFail){
+      var pre = new Image();
+      pre.onload = function(){ set(src); };
+      pre.onerror = onFail;
+      pre.src = src;
+    };
+    trySrc('https://unavatar.io/telegram/secretsharkq?t=' + Date.now(), function(){
+      trySrc('https://unavatar.io/telegram/secretsharkq', function(){
+        set(AVA_PLACEHOLDER);
+      });
+    });
   }
   pullName(); pullAvatar();
   setInterval(function(){ pullName(); pullAvatar(); }, 60000);
