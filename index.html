@@ -308,7 +308,7 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   snowCanvas.id = 'snow';
   document.body.appendChild(snowCanvas);
   var sctx = snowCanvas.getContext('2d');
-  var flakes = [], snowOn = true, snowRunning = false, snowRAF = 0;
+  var flakes = [], snowOn = true, snowRunning = false, snowRAF = 0, snowAlpha = 0, snowTarget = 0;
   function snowSize(){ snowCanvas.width = window.innerWidth; snowCanvas.height = window.innerHeight; }
   window.addEventListener('resize', function(){ if (snowRunning) snowSize(); });
   function makeFlakes(){
@@ -325,6 +325,12 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
     });
   }
   function tickSnow(t){
+    snowAlpha += (snowTarget - snowAlpha) * 0.035;
+    if (snowTarget === 0 && snowAlpha < 0.02){
+      snowAlpha = 0; snowRunning = false;
+      sctx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+      return;
+    }
     sctx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
     sctx.fillStyle = '#ffffff';
     for (var i = 0; i < flakes.length; i++){
@@ -333,20 +339,18 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
       f.x += Math.sin(t / 1400 + f.ph) * 0.4 + f.d;
       if (f.y > snowCanvas.height + 6){ f.y = -6; f.x = Math.random() * window.innerWidth; }
       if (f.x < -6) f.x = window.innerWidth + 6; else if (f.x > window.innerWidth + 6) f.x = -6;
-      sctx.globalAlpha = f.o * (0.75 + 0.25 * Math.sin(t / 900 + f.ph));
+      sctx.globalAlpha = f.o * (0.75 + 0.25 * Math.sin(t / 900 + f.ph)) * snowAlpha;
       sctx.beginPath(); sctx.arc(f.x, f.y, f.r, 0, 6.283); sctx.fill();
     }
     sctx.globalAlpha = 1;
-    if (snowOn && snowRunning) snowRAF = requestAnimationFrame(tickSnow);
+    if (snowRunning) snowRAF = requestAnimationFrame(tickSnow);
   }
   function updateSnow(){
     var want = snowOn && document.documentElement.dataset.theme !== 'light';
-    if (want && !snowRunning){
+    snowTarget = want ? 1 : 0;
+    if ((snowTarget === 1 || snowAlpha > 0.01) && !snowRunning){
       snowRunning = true; snowSize(); makeFlakes();
       snowRAF = requestAnimationFrame(tickSnow);
-    } else if (!want && snowRunning){
-      snowRunning = false; cancelAnimationFrame(snowRAF);
-      sctx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
     }
   }
   try { snowOn = localStorage.getItem('shq-snow') !== 'off'; } catch(e) {}
