@@ -13,7 +13,7 @@
 html[data-theme=light]{--bg:#f5f5f7;--glow:#e8e8ed;--card:#ffffff;--line:#d2d2d7;--tx:#1d1d1f;--mut:#6e6e73;--ac:#0071e3;--hover:#eeeef0;--chipbg:rgba(0,0,0,.04);--btnr:999px;--ring:linear-gradient(135deg,#0071e3,#42a5f5);--ringglow:rgba(0,113,227,.2);--shade:rgba(0,0,0,.35)}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
-body{background:radial-gradient(1200px 700px at 50% -10%,var(--glow) 0%,var(--bg) 55%) no-repeat fixed;background-color:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;padding:28px 16px;transition:background-color .4s ease,color .4s ease}
+body{background:radial-gradient(1200px 700px at 50% -10%,var(--glow) 0%,var(--bg) 55%) no-repeat fixed;background-color:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;padding:28px 16px;transition:background-color .4s ease,color .4s ease;-webkit-user-select:none;user-select:none}
 .sheet,.langbtn,.themebtn,.qr-go{transition:background-color .4s ease,color .4s ease,border-color .4s ease}
 .card{width:100%;max-width:360px;text-align:center;position:relative;animation:rise .55s ease-out both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
@@ -162,16 +162,21 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
     var maxR = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
     var o = document.createElement('div');
     o.style.cssText = 'position:fixed;inset:0;z-index:9999;pointer-events:none;background:' +
-      (toLight ? '#f5f5f7' : '#000000') + ';clip-path:circle(0px at ' + x + 'px ' + y + 'px)';
+      (toLight ? '#f5f5f7' : '#000000') + ';clip-path:circle(0px at ' + x + 'px ' + y + 'px);' +
+      'transition:clip-path .45s ease-in-out;will-change:clip-path';
     document.body.appendChild(o);
-    var grow = o.animate(
-      [{clipPath: 'circle(0px at ' + x + 'px ' + y + 'px)'}, {clipPath: 'circle(' + maxR + 'px at ' + x + 'px ' + y + 'px)'}],
-      {duration: 450, easing: 'ease-in-out'});
-    grow.onfinish = function(){
+    var finished = false;
+    function fin(){
+      if (finished) return;
+      finished = true;
       apply();
-      var fade = o.animate([{opacity: 1}, {opacity: 0}], {duration: 350, easing: 'ease-out'});
-      fade.onfinish = function(){ o.remove(); };
-    };
+      o.style.transition = 'opacity .35s ease-out';
+      o.style.opacity = '0';
+      setTimeout(function(){ if (o.parentNode) o.parentNode.removeChild(o); }, 420);
+    }
+    o.addEventListener('transitionend', fin, {once: true});
+    setTimeout(function(){ o.style.clipPath = 'circle(' + maxR + 'px at ' + x + 'px ' + y + 'px)'; }, 30);
+    setTimeout(fin, 800);
   }
   tb.addEventListener('click', function(){
     var d = document.documentElement;
