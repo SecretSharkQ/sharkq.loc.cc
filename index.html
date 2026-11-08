@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZxcGram — форк Telegram Desktop</title>
+<meta name="description" content="ZxcGram — открытый форк Telegram Desktop: свой клиент, свои правила.">
+<style>
+:root{--bg:#0e1621;--card:#17212b;--line:#22303c;--tx:#eaf2f8;--mut:#8fa4b3;--ac:#2aabee;--ac2:#229ed9}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+header{border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:17px;padding:18px 0}
+.mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--ac),#517da2);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+.hero{padding:64px 0 48px;text-align:center}
+h1{font-size:54px;letter-spacing:-1px;background:linear-gradient(135deg,#2aabee,#7fd0ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);font-size:18px;margin:12px auto 26px;max-width:540px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);color:var(--mut);padding:6px 14px;border-radius:999px;font-size:13px;margin-bottom:24px}
+.dot{width:8px;height:8px;border-radius:50%;background:#f5a623;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;padding:12px 24px;border-radius:12px;font-weight:500;text-decoration:none;font-size:15px}
+.btn-p{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff}
+.btn-s{border:1px solid var(--line);color:var(--tx);background:var(--card)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;padding:8px 0 56px}
+.f{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.f b{display:block;margin-bottom:6px}
+.f span{color:var(--mut);font-size:14px}
+footer{border-top:1px solid var(--line);padding:20px 0;color:var(--mut);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+a{color:var(--ac);text-decoration:none}
+@media(max-width:560px){h1{font-size:40px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="logo"><div class="mark">Z</div>ZxcGram</div></div></header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="badge"><span class="dot"></span>сборка идёт — первый релиз скоро</div>
+    <h1>ZxcGram</h1>
+    <p class="sub">Открытый форк Telegram Desktop. Свой клиент — свои правила: без навязанных обновлений и чужих серверов.</p>
+    <div class="btns">
+      <a class="btn btn-p" href="https://github.com/SecretSharkQ/tdesktop/actions">Скачать сборку</a>
+      <a class="btn btn-s" href="https://github.com/SecretSharkQ/tdesktop">GitHub</a>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="f"><b>💬 Полный функционал</b><span>Всё как в Telegram Desktop: чаты, файлы, звонки, синхронизация — на движке оригинала.</span></div>
+    <div class="f"><b>🔒 Не конфликтует</b><span>Свой идентификатор уведомлений и каталог данных — ставится параллельно с официальным клиентом.</span></div>
+    <div class="f"><b>📖 Открытый код</b><span>GPL-3.0. Каждая сборка собирается публично в GitHub Actions — можно проверить что внутри.</span></div>
+    <div class="f"><b>🚫 Без автообновлений</b><span>Клиент не скачивает обновления с серверов Telegram — только то, что собрано здесь.</span></div>
+  </div>
+</div>
+
+<footer><div class="wrap">
+  <span>© 2026 ZxcGram · sharkq.loc.cc</span>
+  <span>Не связан с Telegram FZ-LLC</span>
+</div></footer>
+</body>
+</html>
