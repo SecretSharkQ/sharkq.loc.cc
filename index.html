@@ -135,8 +135,25 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
     }).then(function(d){ applyName(d.name); }).catch(function(){});
   });
 
-  // theme (circle reveal from button)
+  // theme (circle reveal from button; manual wipe fallback for http)
   var tb = document.getElementById('tbtn');
+  function circleWipe(apply, toLight){
+    var r = tb.getBoundingClientRect();
+    var x = r.left + r.width / 2, y = r.top + r.height / 2;
+    var maxR = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+    var o = document.createElement('div');
+    o.style.cssText = 'position:fixed;inset:0;z-index:9999;pointer-events:none;background:' +
+      (toLight ? '#f5f5f7' : '#000000') + ';clip-path:circle(0px at ' + x + 'px ' + y + 'px)';
+    document.body.appendChild(o);
+    var grow = o.animate(
+      [{clipPath: 'circle(0px at ' + x + 'px ' + y + 'px)'}, {clipPath: 'circle(' + maxR + 'px at ' + x + 'px ' + y + 'px)'}],
+      {duration: 450, easing: 'ease-in-out'});
+    grow.onfinish = function(){
+      apply();
+      var fade = o.animate([{opacity: 1}, {opacity: 0}], {duration: 350, easing: 'ease-out'});
+      fade.onfinish = function(){ o.remove(); };
+    };
+  }
   tb.addEventListener('click', function(){
     var d = document.documentElement;
     var toLight = d.dataset.theme !== 'light';
@@ -144,7 +161,8 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
       d.dataset.theme = toLight ? 'light' : 'dark';
       try { localStorage.setItem('shq-theme', toLight ? 'light' : 'dark'); } catch(e) {}
     };
-    if (document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (document.startViewTransition && !reduced) {
       var r = tb.getBoundingClientRect();
       var x = r.left + r.width / 2, y = r.top + r.height / 2;
       var maxR = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
@@ -155,6 +173,8 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
           { duration: 650, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' }
         );
       }).catch(function(){});
+    } else if (!reduced) {
+      circleWipe(apply, toLight);
     } else apply();
   });
 
