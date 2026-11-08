@@ -99,7 +99,7 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   </div>
 
   <div class="ava"><img src="https://unavatar.io/telegram/secretsharkq" alt="Аватар из Telegram" referrerpolicy="no-referrer"></div>
-  <h1 id="pname">шеф | вайбкодер</h1>
+  <h1 id="pname">шеф | новогодни</h1>
   <button class="user" id="nick" type="button" data-copy="@SecretSharkQ">@SecretSharkQ</button>
 
   <nav class="links">
@@ -158,9 +158,13 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
     fetch('name.json?t=' + Date.now()).then(function(r){
       return r.ok ? r.json() : Promise.reject();
     }).then(function(d){ applyName(d.name); }).catch(function(){
-      fetch('https://secretsharkq.github.io/sharkq.loc.cc/name.json?t=' + Date.now()).then(function(r){
-        return r.ok ? r.json() : Promise.reject();
-      }).then(function(d){ applyName(d.name); }).catch(function(){});
+      fetch('https://r.jina.ai/https://t.me/secretsharkq').then(function(r){
+        return r.ok ? r.text() : Promise.reject();
+      }).then(function(t){
+        var m = t.match(/^Title:\s*(.+)$/m);
+        var nm = m && m[1] ? m[1].trim() : '';
+        if (nm && nm.indexOf('Telegram') !== 0) applyName(nm);
+      }).catch(function(){});
     });
   }
   function pullAvatar(){
