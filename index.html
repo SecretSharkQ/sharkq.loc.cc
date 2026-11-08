@@ -35,6 +35,7 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 .user.copied{background:var(--ac);border-color:var(--ac);color:#fff;animation:pop .45s cubic-bezier(.2,1.4,.4,1) both}
 @keyframes ripple{from{opacity:.75;transform:scale(1)}to{opacity:0;transform:scale(1.55)}}
 .user.rippling::after{content:'';position:absolute;inset:-1px;border-radius:999px;border:2px solid var(--ac);animation:ripple .55s ease-out forwards;pointer-events:none}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
 .links{display:flex;flex-direction:column;gap:11px}
 .btn{display:flex;align-items:center;gap:13px;padding:14px 18px;border-radius:var(--btnr);background:var(--card);border:1px solid var(--line);color:var(--tx);text-decoration:none;font-size:15px;font-weight:500;transition:transform .12s ease,box-shadow .12s ease,background-color .4s ease,color .4s ease,border-color .4s ease}
 .btn .txt{flex:1;text-align:center}
@@ -134,13 +135,27 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
     }).then(function(d){ applyName(d.name); }).catch(function(){});
   });
 
-  // theme
+  // theme (circle reveal from button)
   var tb = document.getElementById('tbtn');
   tb.addEventListener('click', function(){
     var d = document.documentElement;
     var toLight = d.dataset.theme !== 'light';
-    d.dataset.theme = toLight ? 'light' : 'dark';
-    try { localStorage.setItem('shq-theme', toLight ? 'light' : 'dark'); } catch(e) {}
+    var apply = function(){
+      d.dataset.theme = toLight ? 'light' : 'dark';
+      try { localStorage.setItem('shq-theme', toLight ? 'light' : 'dark'); } catch(e) {}
+    };
+    if (document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var r = tb.getBoundingClientRect();
+      var x = r.left + r.width / 2, y = r.top + r.height / 2;
+      var maxR = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+      var vt = document.startViewTransition(apply);
+      vt.ready.then(function(){
+        document.documentElement.animate(
+          { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + maxR + 'px at ' + x + 'px ' + y + 'px)'] },
+          { duration: 650, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' }
+        );
+      }).catch(function(){});
+    } else apply();
   });
 
   // language
