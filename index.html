@@ -81,7 +81,7 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
     </a>
   </nav>
 
-  <div class="foot" id="cyber" aria-hidden="true">sharkq.loc.cc</div>
+  <div class="foot" id="cyber" aria-hidden="true"></div>
 </main>
 
 <div class="modal" id="qr" aria-hidden="true">
@@ -156,43 +156,19 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   document.getElementById('qrclose').addEventListener('click', closeQr);
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeQr(); });
 
-  // hacker scramble line
-  var el = document.getElementById('cyber');
-  if (el) {
-    var CH = '!<>-_\\/[]{}=+*^?#01ABCDEF';
-    var POOL = ['sharkq.loc.cc','sharkq.netlify.app','@secretsharkq','0x5H4RKQ_1337','sudo rm -rf /','ping 127.0.0.1','hack the planet','t.me/secretsharkq'];
-    var frame = 0;
-    function scramble(to){
-      var from = el.textContent;
-      var len = Math.max(from.length, to.length), q = [], i;
-      for (i = 0; i < len; i++){
-        var s = Math.floor(Math.random() * 22);
-        q.push({from: from[i] || '', to: to[i] || '', start: s, end: s + 10 + Math.floor(Math.random() * 22), ch: ''});
-      }
-      cancelAnimationFrame(frame);
-      var t0 = performance.now();
-      function tick(now){
-        var out = '', done = 0, i, d;
-        for (i = 0; i < len; i++){
-          d = q[i];
-          if (now - t0 >= d.end * 16.7){ out += d.to; done++; }
-          else if (now - t0 >= d.start * 16.7){
-            if (!d.ch || Math.random() < 0.3) d.ch = CH[Math.floor(Math.random() * CH.length)];
-            out += '<span class="dud">' + d.ch + '</span>';
-          } else out += d.from;
-        }
-        el.innerHTML = out;
-        if (done < len) frame = requestAnimationFrame(tick);
-      }
-      frame = requestAnimationFrame(tick);
-    }
-    var pi = 0;
-    function cycle(){
-      scramble(POOL[pi % POOL.length]); pi++;
-      setTimeout(cycle, 3600);
-    }
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) cycle();
+  // hacker address bar
+  var URLPOOL = ['sh4rkq', '0x5H4RKQ', 'r00t@sharkq', 'h4ck_th3_pl4n3t', '1337', 'm4tr1x', 'sharkq.loc.cc', 'n0t_4_v1rus', 'sudo_rm_rf'];
+  function junkUrl(){
+    var n = 4 + Math.floor(Math.random() * 8), s = '';
+    var c = '0123456789ABCDEFabcdef_';
+    for (var i = 0; i < n; i++) s += c[Math.floor(Math.random() * c.length)];
+    return s;
   }
+  setInterval(function(){
+    if (document.hidden) return;
+    var s = Math.random() < 0.5 ? URLPOOL[Math.floor(Math.random() * URLPOOL.length)] : junkUrl();
+    try { history.replaceState(null, '', '/#' + s); } catch(e) {}
+  }, 1900);
 })();
 </script>
 </body>
