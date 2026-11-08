@@ -1,0 +1,34 @@
+name: Sync Telegram name
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch current name from t.me
+        run: |
+          NAME=$(curl -s https://t.me/secretsharkq | grep -oP '(?<=<meta property="og:title" content=")[^"]*' | head -1 || true)
+          if [ -z "$NAME" ] || [[ "$NAME" == Telegram* ]]; then
+            NAME=$(python3 -c "import json;print(json.load(open('name.json'))['name'])" 2>/dev/null || echo "шеф")
+          fi
+          printf '{"name": "%s"}\n' "$(printf '%s' "$NAME" | sed 's/"/\\"/g')" > name.json
+
+      - name: Commit if changed
+        run: |
+          git config user.name "tg-sync-bot"
+          git config user.email "tg-sync-bot@users.noreply.github.com"
+          git add name.json
+          if ! git diff --cached --quiet; then
+            git commit -m "sync: telegram name"
+            git push
+          fi
