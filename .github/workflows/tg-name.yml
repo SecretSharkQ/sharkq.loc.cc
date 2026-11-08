@@ -32,3 +32,16 @@ jobs:
             git commit -m "sync: telegram name"
             git push
           fi
+
+      - name: Push name.json to Netlify
+        env:
+          NLT: ${{ secrets.NLT }}
+        run: |
+          SITE_ID="c8166aa3-ade8-4e51-adc5-15e0f5f7817e"
+          DIGEST=$(sha1sum name.json | cut -d' ' -f1)
+          DID=$(curl -s -X POST -H "Authorization: Bearer $NLT" -H 'Content-Type: application/json' \
+            -d "{\"files\": {\"/name.json\": \"$DIGEST\"}}" \
+            "https://api.netlify.com/api/v1/sites/$SITE_ID/deploys" | python3 -c "import json,sys;print(json.load(sys.stdin)['id'])")
+          curl -s -X PUT -H "Authorization: Bearer $NLT" -H 'Content-Type: application/octet-stream' \
+            --data-binary @name.json \
+            "https://api.netlify.com/api/v1/deploys/$DID/files/name.json"
