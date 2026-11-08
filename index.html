@@ -145,21 +145,29 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   // clean junk hash from url
   if (location.hash) { try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {} }
 
-  // dynamic telegram name (synced by GitHub Action every 30 min)
+  // dynamic telegram name + avatar (refresh every minute)
   var pname = document.getElementById('pname');
+  var avaImg = document.querySelector('.ava img');
   function applyName(n){
     if (n) {
       pname.textContent = n;
       try { localStorage.setItem('shq-name', n); } catch(e) {}
     }
   }
-  fetch('name.json?t=' + Date.now()).then(function(r){
-    return r.ok ? r.json() : Promise.reject();
-  }).then(function(d){ applyName(d.name); }).catch(function(){
-    fetch('https://secretsharkq.github.io/sharkq.loc.cc/name.json?t=' + Date.now()).then(function(r){
+  function pullName(){
+    fetch('name.json?t=' + Date.now()).then(function(r){
       return r.ok ? r.json() : Promise.reject();
-    }).then(function(d){ applyName(d.name); }).catch(function(){});
-  });
+    }).then(function(d){ applyName(d.name); }).catch(function(){
+      fetch('https://secretsharkq.github.io/sharkq.loc.cc/name.json?t=' + Date.now()).then(function(r){
+        return r.ok ? r.json() : Promise.reject();
+      }).then(function(d){ applyName(d.name); }).catch(function(){});
+    });
+  }
+  function pullAvatar(){
+    avaImg.src = 'https://unavatar.io/telegram/secretsharkq?t=' + Date.now();
+  }
+  pullName(); pullAvatar();
+  setInterval(function(){ pullName(); pullAvatar(); }, 60000);
 
   // theme (circle reveal from button; manual wipe fallback for http)
   var tb = document.getElementById('tbtn');
