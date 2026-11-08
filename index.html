@@ -81,7 +81,7 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
     </a>
   </nav>
 
-  <div class="foot" id="cyber" aria-hidden="true"></div>
+  <div class="foot"></div>
 </main>
 
 <div class="modal" id="qr" aria-hidden="true">
@@ -156,19 +156,6 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   document.getElementById('qrclose').addEventListener('click', closeQr);
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeQr(); });
 
-  // hacker address bar
-  var URLPOOL = ['sh4rkq', '0x5H4RKQ', 'r00t@sharkq', 'h4ck_th3_pl4n3t', '1337', 'm4tr1x', 'sharkq.loc.cc', 'n0t_4_v1rus', 'sudo_rm_rf'];
-  function junkUrl(){
-    var n = 4 + Math.floor(Math.random() * 8), s = '';
-    var c = '0123456789ABCDEFabcdef_';
-    for (var i = 0; i < n; i++) s += c[Math.floor(Math.random() * c.length)];
-    return s;
-  }
-  setInterval(function(){
-    if (document.hidden) return;
-    var s = Math.random() < 0.5 ? URLPOOL[Math.floor(Math.random() * URLPOOL.length)] : junkUrl();
-    try { history.replaceState(null, '', '/#' + s); } catch(e) {}
-  }, 1900);
 })();
 </script>
 </body>
