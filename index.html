@@ -20,8 +20,15 @@ body{background:radial-gradient(1200px 700px at 50% -10%,var(--glow) 0%,var(--bg
 @media(prefers-reduced-motion:reduce){.card{animation:none}}
 .themebtn{position:absolute;top:-4px;right:-4px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--mut);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .themebtn svg{display:block}
-.langbtn{position:absolute;top:-4px;right:44px;height:40px;min-width:40px;padding:0 12px;border-radius:20px;border:1px solid var(--line);background:var(--card);color:var(--mut);cursor:pointer;font-size:12px;font-weight:500;font-family:'Consolas',monospace}
+.langwrap{position:absolute;top:-4px;right:44px}
+.langbtn{height:40px;min-width:40px;padding:0 12px;border-radius:20px;border:1px solid var(--line);background:var(--card);color:var(--mut);cursor:pointer;font-size:12px;font-weight:500;font-family:'Consolas',monospace}
 .langbtn:hover,.themebtn:hover{color:var(--tx)}
+.langmenu{position:absolute;top:46px;right:0;min-width:160px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px;opacity:0;visibility:hidden;transform:translateY(-8px) scale(.95);transform-origin:top right;transition:opacity .22s ease,transform .22s ease,visibility .22s;z-index:100;box-shadow:0 12px 34px rgba(0,0,0,.4)}
+.langmenu.open{opacity:1;visibility:visible;transform:none}
+.langmenu button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;border:none;background:none;color:var(--tx);font-size:13px;border-radius:9px;cursor:pointer;font-family:inherit;transition:background .15s}
+.langmenu button:hover{background:var(--hover)}
+.langmenu button.act{color:var(--ac);font-weight:600}
+.langmenu button.act::after{content:'✓'}
 html .themebtn .sun{display:block}
 html .themebtn .moon{display:none}
 html[data-theme=light] .themebtn .sun{display:none}
@@ -64,7 +71,7 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 .qr-x:hover{color:var(--tx)}
 .foot{margin-top:26px;color:var(--mut);font-size:12px;font-family:'Consolas','Courier New',monospace;min-height:18px;letter-spacing:.5px}
 .foot .dud{opacity:.4}
-@media(max-width:380px){.ava{width:96px;height:96px}h1{font-size:23px}.langbtn{right:38px;padding:0 8px}}
+@media(max-width:380px){.ava{width:96px;height:96px}h1{font-size:23px}.langwrap{right:38px}.langbtn{padding:0 8px}}
 </style>
 </head>
 <body>
@@ -73,7 +80,16 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
     <svg class="moon" viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     <svg class="sun" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
   </button>
-  <button class="langbtn" id="langbtn" type="button" aria-label="Switch language">EN</button>
+  <div class="langwrap">
+    <button class="langbtn" id="langbtn" type="button" aria-label="Switch language">RU</button>
+    <div class="langmenu" id="langmenu" aria-hidden="true">
+      <button type="button" data-lang="ru">Русский</button>
+      <button type="button" data-lang="en">English</button>
+      <button type="button" data-lang="uk">Українська</button>
+      <button type="button" data-lang="pl">Polski</button>
+      <button type="button" data-lang="be">Беларуская</button>
+    </div>
+  </div>
 
   <div class="ava"><img src="https://unavatar.io/telegram/secretsharkq" alt="Аватар из Telegram" referrerpolicy="no-referrer"></div>
   <h1 id="pname">шеф | вайбкодер</h1>
@@ -111,7 +127,10 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 (function(){
   var I18N = {
     ru: {tg:'Написать в личку', 'tg-s':'QR или сразу переход', 'gh-s':'код и проекты', scan:'Сканируй или жми', go:'Перейти в Telegram', close:'Закрыть', copied:'скопировано ✓'},
-    en: {tg:'Message me', 'tg-s':'QR or direct link', 'gh-s':'code & projects', scan:'Scan or tap', go:'Open Telegram', close:'Close', copied:'copied ✓'}
+    en: {tg:'Message me', 'tg-s':'QR or direct link', 'gh-s':'code & projects', scan:'Scan or tap', go:'Open Telegram', close:'Close', copied:'copied ✓'},
+    uk: {tg:'Написати в особисті', 'tg-s':'QR або одразу перехід', 'gh-s':'код і проєкти', scan:'Скануй або тисни', go:'Перейти в Telegram', close:'Закрити', copied:'скопійовано ✓'},
+    pl: {tg:'Napisz do mnie', 'tg-s':'QR albo przejdź od razu', 'gh-s':'kod i projekty', scan:'Zeskanuj lub kliknij', go:'Otwórz Telegram', close:'Zamknij', copied:'skopiowano ✓'},
+    be: {tg:'Напісаць у асабістыя', 'tg-s':'QR ці адразу пераход', 'gh-s':'код і праекты', scan:'Скануй ці націсні', go:'Перайсці ў Telegram', close:'Закрыць', copied:'скапіявана ✓'}
   };
   var lang = 'ru';
   try { lang = localStorage.getItem('shq-lang') || 'ru'; } catch(e) {}
@@ -178,23 +197,49 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
     } else apply();
   });
 
-  // language
+  // language (dropdown + swap animation)
   var lb = document.getElementById('langbtn');
-  function applyLang(){
+  var langmenu = document.getElementById('langmenu');
+  function applyLang(animate){
     var els = document.querySelectorAll('[data-i18n]');
     for (var i = 0; i < els.length; i++) {
       var k = els[i].dataset.i18n;
       if (I18N[lang][k]) els[i].textContent = I18N[lang][k];
     }
     document.documentElement.lang = lang;
-    lb.textContent = (lang === 'ru') ? 'EN' : 'RU';
+    lb.textContent = lang.toUpperCase();
+    var opts = langmenu.querySelectorAll('button');
+    for (var j = 0; j < opts.length; j++) opts[j].classList.toggle('act', opts[j].dataset.lang === lang);
+    if (animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelector('.card').animate(
+        [{opacity:.3, transform:'translateY(6px)'}, {opacity:1, transform:'none'}],
+        {duration:280, easing:'ease-out'});
+    }
   }
-  lb.addEventListener('click', function(){
-    lang = (lang === 'ru') ? 'en' : 'ru';
-    try { localStorage.setItem('shq-lang', lang); } catch(e) {}
-    applyLang();
+  lb.addEventListener('click', function(e){
+    e.stopPropagation();
+    langmenu.classList.toggle('open');
+    langmenu.setAttribute('aria-hidden', String(!langmenu.classList.contains('open')));
   });
-  applyLang();
+  var mopts = langmenu.querySelectorAll('button');
+  for (var mi = 0; mi < mopts.length; mi++) {
+    (function(btn){
+      btn.addEventListener('click', function(){
+        lang = btn.dataset.lang;
+        try { localStorage.setItem('shq-lang', lang); } catch(e) {}
+        applyLang(true);
+        langmenu.classList.remove('open');
+        langmenu.setAttribute('aria-hidden', 'true');
+      });
+    })(mopts[mi]);
+  }
+  document.addEventListener('click', function(e){
+    if (!langmenu.contains(e.target) && !lb.contains(e.target)) {
+      langmenu.classList.remove('open');
+      langmenu.setAttribute('aria-hidden', 'true');
+    }
+  });
+  applyLang(false);
 
   // click to copy (with http fallback)
   var chip = document.getElementById('nick');
