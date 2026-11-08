@@ -7,10 +7,10 @@
 <meta name="description" content="Личная визитка · @secretsharkq">
 <link rel="icon" href="https://unavatar.io/telegram/secretsharkq">
 <link rel="preconnect" href="https://unavatar.io" crossorigin>
-<script>try{if(localStorage.getItem('shq-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script>try{if(localStorage.getItem('shq-theme')!=='light')document.documentElement.dataset.theme='dark'}catch(e){}</script>
 <style>
-:root{--bg:#eef2f7;--glow:#dfeaf4;--card:#ffffff;--line:#d9e3ee;--tx:#17212b;--mut:#5e7080;--ac:#2aabee;--hover:#f2f6fb;--chipbg:rgba(23,33,43,.03)}
-html[data-theme=dark]{--bg:#0b1420;--glow:#16283c;--card:#121e2b;--line:#1f2f3f;--tx:#eaf2f8;--mut:#7f95a6;--ac:#2aabee;--hover:#162434;--chipbg:rgba(255,255,255,.03)}
+:root{--bg:#0b1420;--glow:#16283c;--card:#121e2b;--line:#1f2f3f;--tx:#eaf2f8;--mut:#7f95a6;--ac:#2aabee;--hover:#162434;--chipbg:rgba(255,255,255,.03)}
+html[data-theme=light]{--bg:#eef2f7;--glow:#dfeaf4;--card:#ffffff;--line:#d9e3ee;--tx:#17212b;--mut:#5e7080;--ac:#2aabee;--hover:#f2f6fb;--chipbg:rgba(23,33,43,.03)}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:radial-gradient(1200px 700px at 50% -10%,var(--glow) 0%,var(--bg) 55%) no-repeat fixed;background-color:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;padding:28px 16px;transition:background-color .3s,color .3s}
@@ -19,9 +19,10 @@ body{background:radial-gradient(1200px 700px at 50% -10%,var(--glow) 0%,var(--bg
 @media(prefers-reduced-motion:reduce){.card{animation:none}}
 .themebtn{position:absolute;top:-4px;right:-4px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--mut);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .themebtn svg{display:block}
-:root .themebtn .sun{display:none}
-html[data-theme=dark] .themebtn .sun{display:block}
-html[data-theme=dark] .themebtn .moon{display:none}
+html .themebtn .sun{display:block}
+html .themebtn .moon{display:none}
+html[data-theme=light] .themebtn .sun{display:none}
+html[data-theme=light] .themebtn .moon{display:block}
 .ava{width:112px;height:112px;border-radius:50%;margin:0 auto 18px;display:block;padding:3px;background:conic-gradient(from 210deg,var(--ac),#517da2,var(--ac));box-shadow:0 0 34px rgba(42,171,238,.25)}
 .ava img{width:100%;height:100%;border-radius:50%;display:block;object-fit:cover;background:#1c2937}
 h1{font-size:26px;font-weight:600;letter-spacing:.2px}
@@ -60,7 +61,7 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 
   <div class="ava"><img src="https://unavatar.io/telegram/secretsharkq" alt="Аватар из Telegram" referrerpolicy="no-referrer"></div>
   <h1>шеф</h1>
-  <button class="user" id="nick" type="button" data-copy="@secretsharkq" title="Зажми, чтобы скопировать">@secretsharkq</button>
+  <button class="user" id="nick" type="button" data-copy="@secretsharkq">@secretsharkq</button>
 
   <nav class="links">
     <a class="btn" id="tgbtn" href="https://t.me/secretsharkq" target="_blank" rel="noopener">
@@ -99,24 +100,18 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
     else { d.dataset.theme = 'dark'; try{localStorage.setItem('shq-theme','dark')}catch(e){} }
   });
 
-  // long-press copy
-  var chip = document.getElementById('nick'), timer = null, suppress = false, orig = null;
+  // click to copy
+  var chip = document.getElementById('nick'), orig = null;
   function doCopy(){
     navigator.clipboard.writeText(chip.dataset.copy).then(function(){
       if (!orig) orig = chip.innerHTML;
       chip.classList.add('copied'); chip.textContent = 'скопировано ✓';
       if (navigator.vibrate) navigator.vibrate(30);
       setTimeout(function(){ chip.classList.remove('copied'); chip.innerHTML = orig; orig = null; }, 1300);
-      suppress = true; setTimeout(function(){ suppress = false; }, 700);
     });
   }
-  function arm(){ timer = setTimeout(doCopy, 450); }
-  function disarm(){ clearTimeout(timer); }
-  chip.addEventListener('mousedown', arm);
-  chip.addEventListener('touchstart', arm, {passive:true});
-  ['mouseup','mouseleave','touchend','touchmove','touchcancel'].forEach(function(ev){ chip.addEventListener(ev, disarm); });
-  chip.addEventListener('click', function(e){ if (suppress) e.preventDefault(); });
-  chip.addEventListener('contextmenu', function(e){ e.preventDefault(); disarm(); doCopy(); });
+  chip.addEventListener('click', doCopy);
+  chip.addEventListener('contextmenu', function(e){ e.preventDefault(); doCopy(); });
 
   // QR modal
   var modal = document.getElementById('qr');
