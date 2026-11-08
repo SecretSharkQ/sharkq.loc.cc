@@ -70,7 +70,7 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   <button class="langbtn" id="langbtn" type="button" aria-label="Switch language">EN</button>
 
   <div class="ava"><img src="https://unavatar.io/telegram/secretsharkq" alt="Аватар из Telegram" referrerpolicy="no-referrer"></div>
-  <h1 id="pname">шеф | йепе</h1>
+  <h1 id="pname">шеф | вайбкодер</h1>
   <button class="user" id="nick" type="button" data-copy="@secretsharkq">@secretsharkq</button>
 
   <nav class="links">
@@ -113,24 +113,22 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   // clean junk hash from url
   if (location.hash) { try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {} }
 
-  // dynamic telegram name (like avatar)
+  // dynamic telegram name (synced by GitHub Action every 30 min)
   var pname = document.getElementById('pname');
   try { var cn = localStorage.getItem('shq-name'); if (cn) pname.textContent = cn; } catch(e) {}
-  var proxies = [
-    'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://t.me/secretsharkq'),
-    'https://corsproxy.io/?url=' + encodeURIComponent('https://t.me/secretsharkq')
-  ];
-  (function pull(i){
-    if (i >= proxies.length) return;
-    fetch(proxies[i]).then(function(r){ return r.text(); }).then(function(html){
-      var m = html.match(/<meta property="og:title" content="([^"]*)"/);
-      var nm = m && m[1] ? m[1].trim() : '';
-      if (nm && nm.indexOf('Telegram') !== 0) {
-        pname.textContent = nm;
-        try { localStorage.setItem('shq-name', nm); } catch(e) {}
-      }
-    }).catch(function(){ pull(i + 1); });
-  })(0);
+  function applyName(n){
+    if (n) {
+      pname.textContent = n;
+      try { localStorage.setItem('shq-name', n); } catch(e) {}
+    }
+  }
+  fetch('name.json?t=' + Date.now()).then(function(r){
+    return r.ok ? r.json() : Promise.reject();
+  }).then(function(d){ applyName(d.name); }).catch(function(){
+    fetch('https://secretsharkq.github.io/sharkq.loc.cc/name.json?t=' + Date.now()).then(function(r){
+      return r.ok ? r.json() : Promise.reject();
+    }).then(function(d){ applyName(d.name); }).catch(function(){});
+  });
 
   // theme
   var tb = document.getElementById('tbtn');
