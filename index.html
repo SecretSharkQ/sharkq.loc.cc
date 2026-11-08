@@ -70,7 +70,7 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   <button class="langbtn" id="langbtn" type="button" aria-label="Switch language">EN</button>
 
   <div class="ava"><img src="https://unavatar.io/telegram/secretsharkq" alt="Аватар из Telegram" referrerpolicy="no-referrer"></div>
-  <h1>шеф</h1>
+  <h1 id="pname">шеф | йепе</h1>
   <button class="user" id="nick" type="button" data-copy="@secretsharkq">@secretsharkq</button>
 
   <nav class="links">
@@ -110,6 +110,28 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   var lang = 'ru';
   try { lang = localStorage.getItem('shq-lang') || 'ru'; } catch(e) {}
 
+  // clean junk hash from url
+  if (location.hash) { try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {} }
+
+  // dynamic telegram name (like avatar)
+  var pname = document.getElementById('pname');
+  try { var cn = localStorage.getItem('shq-name'); if (cn) pname.textContent = cn; } catch(e) {}
+  var proxies = [
+    'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://t.me/secretsharkq'),
+    'https://corsproxy.io/?url=' + encodeURIComponent('https://t.me/secretsharkq')
+  ];
+  (function pull(i){
+    if (i >= proxies.length) return;
+    fetch(proxies[i]).then(function(r){ return r.text(); }).then(function(html){
+      var m = html.match(/<meta property="og:title" content="([^"]*)"/);
+      var nm = m && m[1] ? m[1].trim() : '';
+      if (nm && nm.indexOf('Telegram') !== 0) {
+        pname.textContent = nm;
+        try { localStorage.setItem('shq-name', nm); } catch(e) {}
+      }
+    }).catch(function(){ pull(i + 1); });
+  })(0);
+
   // theme
   var tb = document.getElementById('tbtn');
   tb.addEventListener('click', function(){
@@ -137,15 +159,29 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   });
   applyLang();
 
-  // click to copy
+  // click to copy (with http fallback)
   var chip = document.getElementById('nick'), orig = null;
+  function onCopied(){
+    if (!orig) orig = chip.innerHTML;
+    chip.classList.add('copied'); chip.textContent = I18N[lang].copied;
+    if (navigator.vibrate) navigator.vibrate(30);
+    setTimeout(function(){ chip.classList.remove('copied'); chip.innerHTML = orig; orig = null; }, 1300);
+  }
+  function legacyCopy(t){
+    var ta = document.createElement('textarea');
+    ta.value = t;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+    if (ok) onCopied();
+  }
   function doCopy(){
-    navigator.clipboard.writeText(chip.dataset.copy).then(function(){
-      if (!orig) orig = chip.innerHTML;
-      chip.classList.add('copied'); chip.textContent = I18N[lang].copied;
-      if (navigator.vibrate) navigator.vibrate(30);
-      setTimeout(function(){ chip.classList.remove('copied'); chip.innerHTML = orig; orig = null; }, 1300);
-    });
+    var t = chip.dataset.copy;
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(t).then(onCopied, function(){ legacyCopy(t); });
+    } else legacyCopy(t);
   }
   chip.addEventListener('click', doCopy);
   chip.addEventListener('contextmenu', function(e){ e.preventDefault(); doCopy(); });
