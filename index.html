@@ -157,7 +157,10 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   function pullName(){
     fetch('name.json?t=' + Date.now()).then(function(r){
       return r.ok ? r.json() : Promise.reject();
-    }).then(function(d){ applyName(d.name); }).catch(function(){
+    }).then(function(d){
+      applyName(d.name);
+      applyAvatarVer(d.ava);
+    }).catch(function(){
       fetch('https://r.jina.ai/https://t.me/secretsharkq').then(function(r){
         return r.ok ? r.text() : Promise.reject();
       }).then(function(t){
@@ -167,28 +170,15 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
       }).catch(function(){});
     });
   }
-  function pullAvatar(){
-    var AVA_PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="112" height="112">' +
-      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
-      '<stop offset="0" stop-color="#1c86c6"/><stop offset="1" stop-color="#0d1117"/>' +
-      '</linearGradient></defs><rect width="112" height="112" fill="url(#g)"/>' +
-      '<text x="56" y="72" font-family="Segoe UI,sans-serif" font-size="46" font-weight="600" fill="#fff" text-anchor="middle">S</text></svg>');
-    var set = function(src){ avaImg.src = src; };
-    var trySrc = function(src, onFail){
-      var pre = new Image();
-      pre.onload = function(){ set(src); };
-      pre.onerror = onFail;
-      pre.src = src;
-    };
-    trySrc('https://unavatar.io/telegram/secretsharkq?t=' + Date.now(), function(){
-      trySrc('https://unavatar.io/telegram/secretsharkq', function(){
-        set('avatar.jpg');
-      });
-    });
+  var avaVer = 0;
+  function applyAvatarVer(v){
+    if (v && String(v) !== String(avaVer)){
+      avaVer = v;
+      avaImg.src = 'avatar.jpg?v=' + v;
+    }
   }
-  pullName(); pullAvatar();
-  setInterval(function(){ pullName(); pullAvatar(); }, 60000);
+  pullName();
+  setInterval(pullName, 60000);
 
   // theme (circle reveal from button; manual wipe fallback for http)
   var tb = document.getElementById('tbtn');
