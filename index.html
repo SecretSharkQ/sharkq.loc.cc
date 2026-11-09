@@ -93,7 +93,7 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 @keyframes gtwinkle{0%,100%{filter:brightness(1.12)}50%{filter:brightness(.55)}}
 html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
 /* countdown */
-#nyd{color:var(--ac);font-family:'Consolas','Courier New',monospace;font-size:12px;letter-spacing:1.5px;font-variant-numeric:tabular-nums;margin-bottom:3px}
+#nyd{color:var(--ac);font-family:'Consolas','Courier New',monospace;font-size:12px;letter-spacing:1.5px;font-variant-numeric:tabular-nums;margin-bottom:3px;transition:opacity .5s ease}
 @media(prefers-reduced-motion:reduce){#pname,#pname .pname-t{animation:none}.pname-t::before,.garland i,.garland i *{animation:none!important}}
 @media(max-width:380px){.ava{width:96px;height:96px}h1{font-size:23px}.langwrap{right:38px}.langbtn{padding:0 8px}#nyd{font-size:11px;letter-spacing:1px}}
 </style>
@@ -416,6 +416,8 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
   var gl = document.getElementById('garland');
   function updateGarland(){
     if (gl) gl.style.opacity = snowOn ? '1' : '0';
+    var nyd = document.getElementById('nyd');
+    if (nyd) nyd.style.opacity = snowOn ? '1' : '0';
   }
   if (gl) {
     var GCOLORS = ['#ff5f6d','#ffc24b','#5ee07f','#57c7ff','#b78bff','#ff8ac2'];
@@ -565,6 +567,7 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
     if (confRAF === 0) confRAF = requestAnimationFrame(tickConf);
   }
   document.querySelector('.ava').addEventListener('click', function(){
+    if (!snowOn) return;
     var r = this.getBoundingClientRect();
     confetti(r.left + r.width / 2, r.top + r.height / 2);
     if (navigator.vibrate) navigator.vibrate(15);
