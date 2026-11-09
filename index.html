@@ -48,13 +48,17 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 .user.rippling::after{content:'';position:absolute;inset:-1px;border-radius:999px;border:2px solid var(--ac);animation:ripple .55s ease-out forwards;pointer-events:none}
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
 .links{display:flex;flex-direction:column;gap:11px}
-.btn{display:flex;align-items:center;gap:13px;padding:14px 18px;border-radius:var(--btnr);background:var(--card);border:1px solid var(--line);color:var(--tx);text-decoration:none;font-size:15px;font-weight:500;transition:transform .12s ease,box-shadow .12s ease,background-color .4s ease,color .4s ease,border-color .4s ease}
+.btn{display:flex;align-items:center;gap:13px;padding:14px 18px;border-radius:var(--btnr);position:relative;overflow:hidden;background:rgba(20,20,23,.45);border:1px solid rgba(255,255,255,.16);color:var(--tx);text-decoration:none;font-size:15px;font-weight:500;backdrop-filter:blur(16px) saturate(1.6);-webkit-backdrop-filter:blur(16px) saturate(1.6);box-shadow:0 10px 34px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.26),inset 0 -1px 0 rgba(255,255,255,.05);transition:transform .12s ease,box-shadow .12s ease,background-color .4s ease,color .4s ease,border-color .4s ease}
+.btn::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.30),rgba(255,255,255,.05) 30%,rgba(255,255,255,0) 52%,rgba(255,255,255,.14) 100%);mix-blend-mode:screen}
 .btn .txt{flex:1;text-align:center}
 .btn:hover{transform:translateY(-1px)}
-.btn.tg{background:linear-gradient(135deg,#2aabee,#1c86c6);border-color:rgba(42,171,238,.4);color:#fff}
-.btn.tg:hover{box-shadow:0 8px 26px rgba(42,171,238,.35)}
-.btn.gh{background:linear-gradient(135deg,#24292f,#0d1117);border-color:#30363d;color:#fff}
-.btn.gh:hover{box-shadow:0 8px 26px rgba(36,41,47,.6)}
+.btn.tg{background:rgba(42,171,238,.34);border-color:rgba(150,215,255,.38);color:#fff}
+.btn.tg:hover{box-shadow:0 8px 26px rgba(42,171,238,.35),inset 0 1px 0 rgba(255,255,255,.3)}
+.btn.gh{background:rgba(24,26,31,.5);border-color:rgba(255,255,255,.2);color:#fff}
+.btn.gh:hover{box-shadow:0 8px 26px rgba(36,41,47,.6),inset 0 1px 0 rgba(255,255,255,.3)}
+html[data-theme=light] .btn{background:rgba(255,255,255,.55);border-color:rgba(0,0,0,.1);box-shadow:0 10px 30px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.7)}
+html[data-theme=light] .btn.tg{background:rgba(42,171,238,.28)}
+html[data-theme=light] .btn.gh{background:rgba(36,41,47,.72)}
 .btn .ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none;color:#fff}
 .btn .ic svg{display:block}
 .btn small{display:block;color:var(--mut);font-size:12px;font-weight:400;margin-top:1px}
@@ -486,6 +490,89 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initNY);
   else initNY();
+
+  // shooting stars (tied to the snow toggle)
+  var meteorCanvas = document.createElement('canvas');
+  meteorCanvas.id = 'meteor';
+  document.body.appendChild(meteorCanvas);
+  var mctx = meteorCanvas.getContext('2d');
+  meteorCanvas.style.cssText = 'position:fixed;inset:0;z-index:0;pointer-events:none';
+  var meteors = [], meteorRAF = 0, meteorLimited = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function meteorSize(){ meteorCanvas.width = window.innerWidth; meteorCanvas.height = window.innerHeight; }
+  meteorSize();
+  window.addEventListener('resize', meteorSize);
+  function spawnMeteor(){
+    if (!snowOn || document.hidden || meteorLimited) return;
+    var ang = Math.PI * (0.20 + Math.random() * 0.22); // вниз-вправо
+    var sp = 7 + Math.random() * 5;
+    meteors.push({ x: Math.random() * window.innerWidth, y: -20,
+      vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp,
+      life: 1, len: 90 + Math.random() * 90 });
+    if (meteorRAF === 0) meteorRAF = requestAnimationFrame(tickMeteors);
+  }
+  function tickMeteors(){
+    mctx.clearRect(0, 0, meteorCanvas.width, meteorCanvas.height);
+    meteors = meteors.filter(function(m){
+      m.x += m.vx; m.y += m.vy; m.life -= 0.018;
+      if (m.life <= 0 || m.y > meteorCanvas.height + 60) return false;
+      var norm = m.len / Math.hypot(m.vx, m.vy);
+      var x2 = m.x - m.vx * norm, y2 = m.y - m.vy * norm;
+      var g = mctx.createLinearGradient(m.x, m.y, x2, y2);
+      g.addColorStop(0, 'rgba(255,255,255,' + (0.9 * m.life).toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(160,200,255,0)');
+      mctx.strokeStyle = g; mctx.lineWidth = 2.2; mctx.lineCap = 'round';
+      mctx.beginPath(); mctx.moveTo(m.x, m.y); mctx.lineTo(x2, y2); mctx.stroke();
+      mctx.fillStyle = 'rgba(255,255,240,' + (0.95 * m.life).toFixed(3) + ')';
+      mctx.beginPath(); mctx.arc(m.x, m.y, 2, 0, 6.283); mctx.fill();
+      return true;
+    });
+    meteorRAF = meteors.length ? requestAnimationFrame(tickMeteors) : 0;
+  }
+  setInterval(function(){
+    if (Math.random() < 0.55) spawnMeteor();
+  }, 5200);
+
+  // confetti easter egg: клик по аватару
+  var confCanvas = document.createElement('canvas');
+  confCanvas.id = 'confetti';
+  document.body.appendChild(confCanvas);
+  var cctx = confCanvas.getContext('2d');
+  confCanvas.style.cssText = 'position:fixed;inset:0;z-index:60;pointer-events:none';
+  function confSize(){ confCanvas.width = window.innerWidth; confCanvas.height = window.innerHeight; }
+  confSize();
+  window.addEventListener('resize', confSize);
+  var confs = [], confRAF = 0;
+  function tickConf(){
+    cctx.clearRect(0, 0, confCanvas.width, confCanvas.height);
+    confs = confs.filter(function(p){
+      p.vy += 0.16; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life -= 0.011;
+      if (p.life <= 0 || p.y > confCanvas.height + 20) return false;
+      cctx.save();
+      cctx.translate(p.x, p.y); cctx.rotate(p.rot);
+      cctx.globalAlpha = Math.max(0, Math.min(1, p.life * 1.7));
+      cctx.fillStyle = p.col;
+      cctx.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * 0.66);
+      cctx.restore();
+      return true;
+    });
+    if (confs.length) confRAF = requestAnimationFrame(tickConf);
+    else { confRAF = 0; cctx.clearRect(0, 0, confCanvas.width, confCanvas.height); }
+  }
+  function confetti(x, y){
+    var cols = ['#ff5ea8','#ff9e57','#57c7ff','#b06bff','#ffe14d','#7ef29c'];
+    for (var i = 0; i < 110; i++){
+      var ang = Math.random() * 6.283, sp = 2 + Math.random() * 7;
+      confs.push({ x: x, y: y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 3.2,
+        s: 5 + Math.random() * 7, rot: Math.random() * 6.283, vr: (Math.random() - 0.5) * 0.32,
+        col: cols[i % cols.length], life: 1 });
+    }
+    if (confRAF === 0) confRAF = requestAnimationFrame(tickConf);
+  }
+  document.querySelector('.ava').addEventListener('click', function(){
+    var r = this.getBoundingClientRect();
+    confetti(r.left + r.width / 2, r.top + r.height / 2);
+    if (navigator.vibrate) navigator.vibrate(15);
+  });
 
 })();
 </script>
