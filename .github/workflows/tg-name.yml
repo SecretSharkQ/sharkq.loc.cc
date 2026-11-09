@@ -1,4 +1,4 @@
-name: Sync Telegram name
+name: Sync Telegram name and avatar
 
 on:
   schedule:
@@ -15,33 +15,59 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch current name from t.me
+      - name: Sync name and avatar from t.me
         run: |
-          NAME=$(curl -s https://t.me/secretsharkq | grep -oP '(?<=<meta property="og:title" content=")[^"]*' | head -1 || true)
-          if [ -z "$NAME" ] || [[ "$NAME" == Telegram* ]]; then
-            NAME=$(python3 -c "import json;print(json.load(open('name.json'))['name'])" 2>/dev/null || echo "шеф")
-          fi
-          printf '{"name": "%s"}\n' "$(printf '%s' "$NAME" | sed 's/"/\\"/g')" > name.json
+          python3 - <<'EOF'
+          import json, re, time, urllib.request
+          UA = {'User-Agent': 'Mozilla/5.0'}
+          html = urllib.request.urlopen(urllib.request.Request(
+              'https://t.me/secretsharkq', headers=UA), timeout=30).read().decode('utf-8', 'replace')
+          d = json.load(open('name.json'))
+          m = re.search(r'<meta property="og:title" content="([^"]*)"', html)
+          name = (m.group(1).strip() if m else '') or d.get('name', 'шеф')
+          if name.startswith('Telegram'):
+              name = d.get('name', 'шеф')
+          changed = False
+          if d.get('name') != name:
+              d['name'] = name
+              changed = True
+          am = re.search(r'https://cdn\d+\.telesco\.pe/file/[A-Za-z0-9_-]+\.jpg', html)
+          if am:
+              try:
+                  data = urllib.request.urlopen(urllib.request.Request(
+                      am.group(0), headers=UA), timeout=30).read()
+                  cur = open('avatar.jpg', 'rb').read()
+                  if data[:3] == b'\xff\xd8\xff' and data != cur:
+                      open('avatar.jpg', 'wb').write(data)
+                      d['ava'] = int(time.time())
+                      changed = True
+                      print('avatar updated')
+              except Exception as e:
+                  print('avatar fetch failed:', e)
+          json.dump(d, open('name.json', 'w'), ensure_ascii=False)
+          print('result:', d, '| changed:', changed)
+          EOF
 
       - name: Commit if changed
         run: |
           git config user.name "tg-sync-bot"
           git config user.email "tg-sync-bot@users.noreply.github.com"
-          git add name.json
+          git add name.json avatar.jpg
           if ! git diff --cached --quiet; then
-            git commit -m "sync: telegram name"
+            git commit -m "sync: telegram name/avatar"
             git push
           fi
 
-      - name: Push name.json + index.html to Netlify
+      - name: Push name.json + index.html + avatar.jpg to Netlify
         env:
           NLT: ${{ secrets.NLT }}
         run: |
           SITE_ID="c8166aa3-ade8-4e51-adc5-15e0f5f7817e"
           D1=$(sha1sum name.json | cut -d' ' -f1)
           D2=$(sha1sum index.html | cut -d' ' -f1)
+          D3=$(sha1sum avatar.jpg | cut -d' ' -f1)
           DID=$(curl -s -X POST -H "Authorization: Bearer $NLT" -H 'Content-Type: application/json' \
-            -d "{\"files\": {\"/name.json\": \"$D1\", \"/index.html\": \"$D2\"}}" \
+            -d "{\"files\": {\"/name.json\": \"$D1\", \"/index.html\": \"$D2\", \"/avatar.jpg\": \"$D3\"}}" \
             "https://api.netlify.com/api/v1/sites/$SITE_ID/deploys" | python3 -c "import json,sys;print(json.load(sys.stdin)['id'])")
           curl -s -X PUT -H "Authorization: Bearer $NLT" -H 'Content-Type: application/octet-stream' \
             --data-binary @name.json \
@@ -49,3 +75,6 @@ jobs:
           curl -s -X PUT -H "Authorization: Bearer $NLT" -H 'Content-Type: application/octet-stream' \
             --data-binary @index.html \
             "https://api.netlify.com/api/v1/deploys/$DID/files/index.html"
+          curl -s -X PUT -H "Authorization: Bearer $NLT" -H 'Content-Type: application/octet-stream' \
+            --data-binary @avatar.jpg \
+            "https://api.netlify.com/api/v1/deploys/$DID/files/avatar.jpg"
