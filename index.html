@@ -76,8 +76,8 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 .foot{margin-top:26px;color:var(--mut);font-size:12px;font-family:'Consolas','Courier New',monospace;min-height:18px;letter-spacing:.5px}
 .foot .dud{opacity:.4}
 /* shimmer name */
-#pname{background:linear-gradient(90deg,#57c7ff,#ff5f6d,#ff8ac2,#57c7ff);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:blueflow 4s linear infinite}
-@keyframes blueflow{0%{background-position:0% 0}100%{background-position:-220% 0}}
+#pname{background:linear-gradient(90deg,#ff4d4d,#ffa64d,#ffe14d,#5edd7f,#4dc7ff,#8a6bff,#e14dff,#ff4d4d);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700;text-shadow:0 1px 1px rgba(0,0,0,.45),0 2px 3px rgba(0,0,0,.4),0 5px 10px rgba(0,0,0,.35),0 10px 26px rgba(0,0,0,.45),0 0 28px rgba(255,140,140,.16),0 0 60px rgba(140,170,255,.14);animation:rainbowflow 14s linear infinite;filter:drop-shadow(0 12px 18px rgba(0,0,0,.4))}
+@keyframes rainbowflow{0%{filter:hue-rotate(0deg) drop-shadow(0 12px 18px rgba(0,0,0,.4));background-position:0% 0}100%{filter:hue-rotate(360deg) drop-shadow(0 12px 18px rgba(0,0,0,.4));background-position:-120% 0}}
 /* garland */
 .garland{position:fixed;top:-2px;left:-10px;right:-10px;height:34px;z-index:9;pointer-events:none;display:flex;justify-content:space-evenly}
 .garland i{position:relative;width:10px;height:15px;flex:none;margin-top:10px;border-radius:50%/55% 55% 45% 45%;background:var(--c);box-shadow:0 0 8px 1px var(--c),0 0 18px 2px var(--c);opacity:.9;transform-origin:50% -8px;animation:gbl 2.6s ease-in-out infinite;animation-delay:var(--d)}
@@ -86,7 +86,7 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 html[data-theme=light] .garland i{box-shadow:0 0 6px 1px var(--c)}
 /* countdown */
 #nyd{color:var(--ac);font-family:'Consolas','Courier New',monospace;font-size:12px;letter-spacing:1.5px;font-variant-numeric:tabular-nums;margin-bottom:3px}
-@media(prefers-reduced-motion:reduce){#pname{animation:none;-webkit-text-fill-color:currentColor;color:var(--tx);background:none}.garland i{animation:none}}
+@media(prefers-reduced-motion:reduce){#pname{animation:none}.garland i{animation:none}}
 @media(max-width:380px){.ava{width:96px;height:96px}h1{font-size:23px}.langwrap{right:38px}.langbtn{padding:0 8px}#nyd{font-size:11px;letter-spacing:1px}}
 </style>
 </head>
