@@ -80,15 +80,21 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 #pname::before{content:attr(data-text);position:absolute;top:3px;left:0;width:100%;color:rgba(0,0,0,.9);text-shadow:0 1px 2px rgba(0,0,0,.55),0 4px 10px rgba(0,0,0,.5),0 10px 28px rgba(0,0,0,.55);z-index:0;pointer-events:none}
 .pname-t{position:relative;z-index:1;background:linear-gradient(90deg,#ff5ea8,#ff9e57,#57c7ff,#b06bff,#ff5ea8);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:nameflow 9s linear infinite}
 @keyframes nameflow{0%{background-position:0% 0}100%{background-position:-300% 0}}
-/* garland */
-.garland{position:fixed;top:-2px;left:-10px;right:-10px;height:34px;z-index:9;pointer-events:none;display:flex;justify-content:space-evenly}
-.garland i{position:relative;width:10px;height:15px;flex:none;margin-top:10px;border-radius:50%/55% 55% 45% 45%;background:var(--c);box-shadow:0 0 8px 1px var(--c),0 0 18px 2px var(--c);opacity:.9;transform-origin:50% -8px;animation:gbl 2.6s ease-in-out infinite;animation-delay:var(--d)}
-.garland i::before{content:'';position:absolute;left:50%;top:-9px;width:2px;height:9px;background:rgba(255,255,255,.3);transform:translateX(-50%)}
-@keyframes gbl{0%,100%{opacity:.95;filter:brightness(1.15)}50%{opacity:.35;filter:brightness(.7)}}
-html[data-theme=light] .garland i{box-shadow:0 0 6px 1px var(--c)}
+/* garland: cable + hanging bulbs */
+.garland{position:fixed;top:-2px;left:-10px;right:-10px;height:60px;z-index:9;pointer-events:none;overflow:visible}
+.garland svg{position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible}
+.garland .bulb{display:block;position:absolute;width:12px;transform-origin:50% 0;animation:gswing var(--sd,3.4s) ease-in-out infinite alternate;animation-delay:var(--bd,0s)}
+.garland .cap{display:block;width:6px;height:7px;margin:0 auto;border-radius:2px;background:linear-gradient(180deg,#3a3a40,#151518);box-shadow:0 1px 2px rgba(0,0,0,.55)}
+.garland .glass{display:block;width:10px;height:13px;margin:-1px auto 0;border-radius:50%/58% 58% 42% 42%;background:radial-gradient(circle at 30% 26%,rgba(255,255,255,.9) 0 7%,rgba(255,255,255,0) 40%),var(--c);box-shadow:0 0 8px 2px var(--c);animation:gtwinkle var(--td,2.6s) ease-in-out infinite;animation-delay:var(--bd,0s)}
+@supports (color: color-mix(in srgb, red 50%, blue)){
+  .garland .glass{box-shadow:0 0 8px 2px var(--c),0 0 22px 7px color-mix(in srgb,var(--c) 55%,transparent)}
+}
+@keyframes gswing{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+@keyframes gtwinkle{0%,100%{filter:brightness(1.12)}50%{filter:brightness(.55)}}
+html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
 /* countdown */
 #nyd{color:var(--ac);font-family:'Consolas','Courier New',monospace;font-size:12px;letter-spacing:1.5px;font-variant-numeric:tabular-nums;margin-bottom:3px}
-@media(prefers-reduced-motion:reduce){#pname{animation:none}.garland i{animation:none}}
+@media(prefers-reduced-motion:reduce){#pname,#pname .pname-t{animation:none}.pname-t::before,.garland i,.garland i *{animation:none!important}}
 @media(max-width:380px){.ava{width:96px;height:96px}h1{font-size:23px}.langwrap{right:38px}.langbtn{padding:0 8px}#nyd{font-size:11px;letter-spacing:1px}}
 </style>
 </head>
@@ -406,18 +412,54 @@ html[data-theme=light] .garland i{box-shadow:0 0 6px 1px var(--c)}
   });
   updateSnow();
 
-  // garland along the top of the screen
+  // garland: swag cable (SVG) + swaying twinkling bulbs
   var gl = document.getElementById('garland');
   if (gl) {
     var GCOLORS = ['#ff5f6d','#ffc24b','#5ee07f','#57c7ff','#b78bff','#ff8ac2'];
-    var gn = Math.max(8, Math.floor(window.innerWidth / 90));
-    for (var gi = 0; gi < gn; gi++) {
-      var bulb = document.createElement('i');
-      bulb.style.setProperty('--c', GCOLORS[gi % GCOLORS.length]);
-      bulb.style.setProperty('--d', (-(Math.random() * 2.6)).toFixed(2) + 's');
-      bulb.style.animationDuration = (2.2 + Math.random() * 1.2).toFixed(2) + 's';
-      bulb.style.marginTop = (6 + Math.sin(gi / (gn - 1) * Math.PI) * 9).toFixed(1) + 'px';
-      gl.appendChild(bulb);
+    var GW = Math.max(340, window.innerWidth);
+    var GH = 60, SAG = 22, ATT = 4;
+    var swags = Math.max(2, Math.round(GW / 320));
+    var swagW = GW / swags;
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var wire = document.createElementNS(svgNS, 'svg');
+    wire.setAttribute('viewBox', '0 0 ' + GW + ' ' + GH);
+    wire.setAttribute('preserveAspectRatio', 'none');
+    var d = '';
+    for (var s = 0; s < swags; s++) {
+      var x0 = s * swagW, x1 = (s + 1) * swagW;
+      d += (s ? 'L' : 'M') + x0 + ' ' + ATT +
+           ' Q ' + ((x0 + x1) / 2) + ' ' + (ATT + SAG * 2) + ' ' + x1 + ' ' + ATT;
+    }
+    var path = document.createElementNS(svgNS, 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', 'rgba(255,255,255,.16)');
+    path.setAttribute('stroke-width', '2');
+    path.setAttribute('stroke-linecap', 'round');
+    wire.appendChild(path);
+    gl.appendChild(wire);
+    for (var sw = 0; sw < swags; sw++) {
+      var per = Math.max(4, Math.round(swagW / 72));
+      for (var bi = 0; bi <= per; bi++) {
+        var u = bi / per;
+        var bx = sw * swagW + u * swagW;
+        var by = ATT + SAG * 4 * u * (1 - u); // dips along the cable
+        var bulb = document.createElement('i');
+        bulb.className = 'bulb';
+        bulb.style.left = (bx - 6) + 'px';
+        bulb.style.top = by + 'px';
+        bulb.style.setProperty('--c', GCOLORS[(sw * 3 + bi) % GCOLORS.length]);
+        bulb.style.setProperty('--td', (2.1 + Math.random() * 1.7).toFixed(2) + 's');
+        bulb.style.setProperty('--sd', (2.8 + Math.random() * 1.9).toFixed(2) + 's');
+        bulb.style.setProperty('--bd', (-(Math.random() * 4)).toFixed(2) + 's');
+        var cap = document.createElement('span');
+        cap.className = 'cap';
+        var glass = document.createElement('span');
+        glass.className = 'glass';
+        bulb.appendChild(cap);
+        bulb.appendChild(glass);
+        gl.appendChild(bulb);
+      }
     }
   }
 
