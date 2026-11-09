@@ -76,8 +76,9 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 .foot{margin-top:26px;color:var(--mut);font-size:12px;font-family:'Consolas','Courier New',monospace;min-height:18px;letter-spacing:.5px}
 .foot .dud{opacity:.4}
 /* shimmer name */
-#pname{position:relative;background:linear-gradient(90deg,#ff5ea8,#ff9e57,#57c7ff,#b06bff,#ff5ea8);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700;animation:nameflow 9s linear infinite;filter:drop-shadow(0 0 22px rgba(255,110,160,.22)) drop-shadow(0 4px 10px rgba(0,0,0,.4))}
-#pname::before{content:attr(data-text);position:absolute;top:3px;left:0;width:100%;z-index:-1;-webkit-text-fill-color:rgba(0,0,0,.9);color:rgba(0,0,0,.9);text-shadow:0 1px 2px rgba(0,0,0,.55),0 4px 10px rgba(0,0,0,.5),0 10px 28px rgba(0,0,0,.55);pointer-events:none}
+#pname{position:relative;font-weight:700;filter:drop-shadow(0 0 22px rgba(255,110,160,.22))}
+#pname::before{content:attr(data-text);position:absolute;top:3px;left:0;width:100%;color:rgba(0,0,0,.9);text-shadow:0 1px 2px rgba(0,0,0,.55),0 4px 10px rgba(0,0,0,.5),0 10px 28px rgba(0,0,0,.55);z-index:0;pointer-events:none}
+.pname-t{position:relative;z-index:1;background:linear-gradient(90deg,#ff5ea8,#ff9e57,#57c7ff,#b06bff,#ff5ea8);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:nameflow 9s linear infinite}
 @keyframes nameflow{0%{background-position:0% 0}100%{background-position:-300% 0}}
 /* garland */
 .garland{position:fixed;top:-2px;left:-10px;right:-10px;height:34px;z-index:9;pointer-events:none;display:flex;justify-content:space-evenly}
@@ -113,7 +114,7 @@ html[data-theme=light] .garland i{box-shadow:0 0 6px 1px var(--c)}
   </div>
 
   <div class="ava"><img src="avatar.jpg" alt="" referrerpolicy="no-referrer"></div>
-  <h1 id="pname" data-text="шеф | новогодни">шеф | новогодни</h1>
+  <h1 id="pname" data-text="шеф | новогодни"><span class="pname-t">шеф | новогодни</span></h1>
   <button class="user" id="nick" type="button" data-copy="@SecretSharkQ">@SecretSharkQ</button>
 
   <nav class="links">
@@ -164,7 +165,8 @@ html[data-theme=light] .garland i{box-shadow:0 0 6px 1px var(--c)}
   var avaImg = document.querySelector('.ava img');
   function applyName(n){
     if (n) {
-      pname.textContent = n;
+      var st = pname.querySelector('.pname-t') || pname;
+      st.textContent = n;
       pname.setAttribute('data-text', n);
       try { localStorage.setItem('shq-name', n); } catch(e) {}
     }
