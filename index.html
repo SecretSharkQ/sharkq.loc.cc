@@ -75,10 +75,24 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 .qr-x:hover{color:var(--tx)}
 .foot{margin-top:26px;color:var(--mut);font-size:12px;font-family:'Consolas','Courier New',monospace;min-height:18px;letter-spacing:.5px}
 .foot .dud{opacity:.4}
-@media(max-width:380px){.ava{width:96px;height:96px}h1{font-size:23px}.langwrap{right:38px}.langbtn{padding:0 8px}}
+/* shimmer name */
+#pname{background:linear-gradient(110deg,var(--tx) 42%,#9fd8ff 50%,#e6f3ff 55%,var(--tx) 58%);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:shimmer 5s linear infinite}
+html[data-theme=light] #pname{background-image:linear-gradient(110deg,var(--tx) 42%,#0071e3 50%,#42a5f5 55%,var(--tx) 58%)}
+@keyframes shimmer{0%{background-position:150% 0}100%{background-position:-150% 0}}
+/* garland */
+.garland{position:fixed;top:-2px;left:-10px;right:-10px;height:34px;z-index:9;pointer-events:none;display:flex;justify-content:space-evenly}
+.garland i{position:relative;width:10px;height:15px;flex:none;margin-top:10px;border-radius:50%/55% 55% 45% 45%;background:var(--c);box-shadow:0 0 8px 1px var(--c),0 0 18px 2px var(--c);opacity:.9;transform-origin:50% -8px;animation:gbl 2.6s ease-in-out infinite;animation-delay:var(--d)}
+.garland i::before{content:'';position:absolute;left:50%;top:-9px;width:2px;height:9px;background:rgba(255,255,255,.3);transform:translateX(-50%)}
+@keyframes gbl{0%,100%{opacity:.95;filter:brightness(1.15)}50%{opacity:.35;filter:brightness(.7)}}
+html[data-theme=light] .garland i{box-shadow:0 0 6px 1px var(--c)}
+/* countdown */
+#nyd{color:var(--ac);font-family:'Consolas','Courier New',monospace;font-size:12px;letter-spacing:1.5px;font-variant-numeric:tabular-nums;margin-bottom:3px}
+@media(prefers-reduced-motion:reduce){#pname{animation:none;-webkit-text-fill-color:currentColor;color:var(--tx);background:none}.garland i{animation:none}}
+@media(max-width:380px){.ava{width:96px;height:96px}h1{font-size:23px}.langwrap{right:38px}.langbtn{padding:0 8px}#nyd{font-size:11px;letter-spacing:1px}}
 </style>
 </head>
 <body>
+<div class="garland" id="garland" aria-hidden="true"></div>
 <main class="card">
   <button class="themebtn" id="tbtn" type="button" aria-label="Сменить тему">
     <svg class="moon" viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -389,8 +403,46 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   });
   updateSnow();
 
+  // garland along the top of the screen
+  var gl = document.getElementById('garland');
+  if (gl) {
+    var GCOLORS = ['#ff5f6d','#ffc24b','#5ee07f','#57c7ff','#b78bff','#ff8ac2'];
+    var gn = Math.max(8, Math.floor(window.innerWidth / 90));
+    for (var gi = 0; gi < gn; gi++) {
+      var bulb = document.createElement('i');
+      bulb.style.setProperty('--c', GCOLORS[gi % GCOLORS.length]);
+      bulb.style.setProperty('--d', (-(Math.random() * 2.6)).toFixed(2) + 's');
+      bulb.style.animationDuration = (2.2 + Math.random() * 1.2).toFixed(2) + 's';
+      bulb.style.marginTop = (6 + Math.sin(gi / (gn - 1) * Math.PI) * 9).toFixed(1) + 'px';
+      gl.appendChild(bulb);
+    }
+  }
+
+  // countdown to New Year (footer is below this script, wait for DOM)
+  function pad2(x){ return (x < 10 ? '0' : '') + x; }
+  function initNY(){
+    var nyd = document.getElementById('nyd');
+    if (!nyd) return;
+    function tickNY(){
+      var now = new Date();
+      var diff = new Date(now.getFullYear() + 1, 0, 1) - now;
+      var d = Math.floor(diff / 86400000);
+      nyd.textContent = 'до Нового года: ' + (d > 0 ? d + 'д ' : '') +
+        pad2(Math.floor(diff / 3600000) % 24) + ':' +
+        pad2(Math.floor(diff / 60000) % 60) + ':' +
+        pad2(Math.floor(diff / 1000) % 60);
+    }
+    tickNY();
+    setInterval(tickNY, 1000);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initNY);
+  else initNY();
+
 })();
 </script>
-<footer style="position:fixed; left:0; right:0; bottom:0; text-align:center; opacity:0.5; font-size:12px; padding:12px; pointer-events:none; z-index:10;">© 2026 SecretSharkQ. Все права защищены.</footer>
+<footer style="position:fixed; left:0; right:0; bottom:0; text-align:center; font-size:12px; padding:12px; pointer-events:none; z-index:10;">
+  <div id="nyd"></div>
+  <div style="opacity:0.5;">© 2026 SecretSharkQ. Все права защищены.</div>
+</footer>
 </body>
 </html>
