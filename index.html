@@ -92,55 +92,14 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 @keyframes gswing{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
 @keyframes gtwinkle{0%,100%{filter:brightness(1.12)}50%{filter:brightness(.55)}}
 html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
-/* background fir trees */
-.tree{position:fixed;bottom:-6px;z-index:0;pointer-events:none}
-.tree.l{left:-28px;width:min(30vw,300px);opacity:.95}
-.tree.r{right:-34px;width:min(23vw,225px);opacity:.72;transform:scaleX(-1)}
-.tree svg{display:block;width:100%;height:auto}
-.tree-light{animation:treeblink var(--td,2.8s) ease-in-out infinite;animation-delay:var(--bd,0s)}
-@keyframes treeblink{0%,100%{opacity:1}50%{opacity:.25}}
-.tree-star{transform-box:fill-box;transform-origin:50% 60%;animation:starglow 3.6s ease-in-out infinite}
-@keyframes starglow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.45)}}
-@media(max-width:480px){.tree.r{display:none}.tree.l{opacity:.5;left:-40px}}
 /* countdown */
 #nyd{color:var(--ac);font-family:'Consolas','Courier New',monospace;font-size:12px;letter-spacing:1.5px;font-variant-numeric:tabular-nums;margin-bottom:3px}
-@media(prefers-reduced-motion:reduce){#pname,#pname .pname-t{animation:none}.pname-t::before,.garland i,.garland i *,.tree-light,.tree-star{animation:none!important}}
+@media(prefers-reduced-motion:reduce){#pname,#pname .pname-t{animation:none}.pname-t::before,.garland i,.garland i *{animation:none!important}}
 @media(max-width:380px){.ava{width:96px;height:96px}h1{font-size:23px}.langwrap{right:38px}.langbtn{padding:0 8px}#nyd{font-size:11px;letter-spacing:1px}}
 </style>
 </head>
 <body>
 <div class="garland" id="garland" aria-hidden="true"></div>
-<svg style="position:absolute;width:0;height:0" aria-hidden="true"><defs>
-  <linearGradient id="tf" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#11502f"/><stop offset="1" stop-color="#06210f"/>
-  </linearGradient>
-  <linearGradient id="ts" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#ffe9a8"/><stop offset="1" stop-color="#e8a33d"/>
-  </linearGradient>
-  <filter id="tglow" x="-80%" y="-80%" width="260%" height="260%">
-    <feGaussianBlur stdDeviation="1.5" result="b"/>
-    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-  </filter>
-  <g id="treeArt">
-    <rect x="93" y="224" width="14" height="30" rx="3.5" fill="#3a2416"/>
-    <polygon points="100,34 40,124 160,124" fill="url(#tf)"/>
-    <polygon points="100,68 26,178 174,178" fill="url(#tf)" opacity=".97"/>
-    <polygon points="100,104 18,228 182,228" fill="url(#tf)"/>
-    <polygon points="100,12 103.1,19.8 111.4,20.3 104.9,25.6 107.1,33.7 100,29.2 92.9,33.7 95.1,25.6 88.6,20.3 96.9,19.8" fill="url(#ts)" class="tree-star"/>
-    <g filter="url(#tglow)">
-      <circle class="tree-light" style="--td:2.4s;--bd:-.3s" cx="72" cy="112" r="2.2" fill="#ffd15c"/>
-      <circle class="tree-light" style="--td:3.1s;--bd:-1.2s" cx="126" cy="100" r="2.2" fill="#ff8ac2"/>
-      <circle class="tree-light" style="--td:2.7s;--bd:-2s" cx="60" cy="168" r="2.2" fill="#57c7ff"/>
-      <circle class="tree-light" style="--td:3.4s;--bd:-.8s" cx="140" cy="160" r="2.2" fill="#ffd15c"/>
-      <circle class="tree-light" style="--td:2.9s;--bd:-1.6s" cx="52" cy="216" r="2.2" fill="#ff6d6d"/>
-      <circle class="tree-light" style="--td:2.5s;--bd:-2.4s" cx="148" cy="212" r="2.2" fill="#7ef29c"/>
-      <circle class="tree-light" style="--td:3.2s;--bd:-.5s" cx="100" cy="130" r="2.2" fill="#ffe9a8"/>
-      <circle class="tree-light" style="--td:2.6s;--bd:-1.9s" cx="100" cy="184" r="2.2" fill="#ff9e57"/>
-    </g>
-  </g>
-</defs></svg>
-<svg class="tree l" viewBox="0 0 200 260" aria-hidden="true"><use href="#treeArt"/></svg>
-<svg class="tree r" viewBox="0 0 200 260" aria-hidden="true"><use href="#treeArt"/></svg>
 <main class="card">
   <button class="themebtn" id="tbtn" type="button" aria-label="Сменить тему">
     <svg class="moon" viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
