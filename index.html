@@ -76,8 +76,9 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 .foot{margin-top:26px;color:var(--mut);font-size:12px;font-family:'Consolas','Courier New',monospace;min-height:18px;letter-spacing:.5px}
 .foot .dud{opacity:.4}
 /* shimmer name */
-#pname{background:linear-gradient(90deg,#ff4d4d,#ffa64d,#ffe14d,#5edd7f,#4dc7ff,#8a6bff,#e14dff,#ff4d4d);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700;text-shadow:0 1px 1px rgba(0,0,0,.45),0 2px 3px rgba(0,0,0,.4),0 5px 10px rgba(0,0,0,.35),0 10px 26px rgba(0,0,0,.45),0 0 28px rgba(255,140,140,.16),0 0 60px rgba(140,170,255,.14);animation:rainbowflow 14s linear infinite;filter:drop-shadow(0 12px 18px rgba(0,0,0,.4))}
-@keyframes rainbowflow{0%{filter:hue-rotate(0deg) drop-shadow(0 12px 18px rgba(0,0,0,.4));background-position:0% 0}100%{filter:hue-rotate(360deg) drop-shadow(0 12px 18px rgba(0,0,0,.4));background-position:-120% 0}}
+#pname{position:relative;background:linear-gradient(90deg,#ff5ea8,#ff9e57,#57c7ff,#b06bff,#ff5ea8);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700;animation:nameflow 9s linear infinite;filter:drop-shadow(0 0 22px rgba(255,110,160,.22)) drop-shadow(0 4px 10px rgba(0,0,0,.4))}
+#pname::before{content:attr(data-text);position:absolute;top:3px;left:0;width:100%;z-index:-1;-webkit-text-fill-color:rgba(0,0,0,.9);color:rgba(0,0,0,.9);text-shadow:0 1px 2px rgba(0,0,0,.55),0 4px 10px rgba(0,0,0,.5),0 10px 28px rgba(0,0,0,.55);pointer-events:none}
+@keyframes nameflow{0%{background-position:0% 0}100%{background-position:-300% 0}}
 /* garland */
 .garland{position:fixed;top:-2px;left:-10px;right:-10px;height:34px;z-index:9;pointer-events:none;display:flex;justify-content:space-evenly}
 .garland i{position:relative;width:10px;height:15px;flex:none;margin-top:10px;border-radius:50%/55% 55% 45% 45%;background:var(--c);box-shadow:0 0 8px 1px var(--c),0 0 18px 2px var(--c);opacity:.9;transform-origin:50% -8px;animation:gbl 2.6s ease-in-out infinite;animation-delay:var(--d)}
@@ -112,7 +113,7 @@ html[data-theme=light] .garland i{box-shadow:0 0 6px 1px var(--c)}
   </div>
 
   <div class="ava"><img src="avatar.jpg" alt="" referrerpolicy="no-referrer"></div>
-  <h1 id="pname">шеф | новогодни</h1>
+  <h1 id="pname" data-text="шеф | новогодни">шеф | новогодни</h1>
   <button class="user" id="nick" type="button" data-copy="@SecretSharkQ">@SecretSharkQ</button>
 
   <nav class="links">
@@ -164,6 +165,7 @@ html[data-theme=light] .garland i{box-shadow:0 0 6px 1px var(--c)}
   function applyName(n){
     if (n) {
       pname.textContent = n;
+      pname.setAttribute('data-text', n);
       try { localStorage.setItem('shq-name', n); } catch(e) {}
     }
   }
