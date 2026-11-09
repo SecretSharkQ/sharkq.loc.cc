@@ -73,6 +73,27 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 .qr-go{display:block;background:linear-gradient(135deg,#2aabee,#1c86c6);color:#fff;text-decoration:none;font-weight:600;padding:12px;border-radius:var(--btnr);font-size:15px}
 .qr-x{background:none;border:none;color:var(--mut);font-size:13px;padding:10px 6px 0;cursor:pointer;font-family:inherit}
 .qr-x:hover{color:var(--tx)}
+.tgwin{width:100%;max-width:330px;background:#0e1621;border:1px solid #2f3b4c;border-radius:18px;overflow:hidden;transform:scale(.94);transition:transform .2s;box-shadow:0 20px 60px rgba(0,0,0,.55)}
+.modal.show .tgwin{transform:scale(1)}
+.tghead{display:flex;align-items:center;gap:10px;background:#17212b;padding:10px 14px;border-bottom:1px solid #0b1420}
+.tghead-ava{width:38px;height:38px;border-radius:50%;overflow:hidden;flex:none}
+.tghead-ava img{width:100%;height:100%;object-fit:cover;display:block}
+.tghead-info{flex:1;min-width:0;text-align:left}
+.tghead-info b{display:block;color:#fff;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tghead-status{color:#7f91a4;font-size:11px}
+.tghead-status i{color:#4fae4e;font-style:normal}
+.tgqr{background:none;border:none;color:#8a9aa9;cursor:pointer;font-size:11px;padding:6px 9px;border-radius:8px;font-family:'Consolas',monospace}
+.tgqr:hover{background:rgba(255,255,255,.06)}
+.tgbody{height:220px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#0e1621}
+.bubble{max-width:85%;padding:9px 12px;border-radius:12px;font-size:13.5px;line-height:1.4;text-align:left;word-wrap:break-word;white-space:pre-wrap}
+.bubble.sys{align-self:center;background:rgba(255,255,255,.06);color:#7f91a4;font-size:12px;text-align:center}
+.bubble.me{align-self:flex-end;background:linear-gradient(135deg,#2aabee,#1c86c6);color:#fff;border-bottom-right-radius:4px}
+.tginput{display:flex;gap:8px;padding:10px;background:#17212b;border-top:1px solid #0b1420}
+.tginput textarea{flex:1;resize:none;background:#0e1621;border:1px solid #2f3b4c;border-radius:20px;color:#eaf2f8;padding:9px 14px;font-family:inherit;font-size:14px;outline:none;height:38px}
+.tginput textarea:focus{border-color:#2aabee}
+.tgsend{width:38px;height:38px;border:none;border-radius:50%;background:linear-gradient(135deg,#2aabee,#1c86c6);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}
+.tgsend:hover{opacity:.9}
+.tgfoot{padding:0 14px 10px;background:#17212b;color:#5f7080;font-size:11px;text-align:center;min-height:14px}
 .foot{margin-top:26px;color:var(--mut);font-size:12px;font-family:'Consolas','Courier New',monospace;min-height:18px;letter-spacing:.5px}
 .foot .dud{opacity:.4}
 @media(max-width:380px){.ava{width:96px;height:96px}h1{font-size:23px}.langwrap{right:38px}.langbtn{padding:0 8px}}
@@ -130,14 +151,42 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   </div>
 </div>
 
+<div class="modal" id="tgchat" aria-hidden="true">
+  <div class="tgwin">
+    <div class="tghead">
+      <div class="tghead-ava"><img src="avatar.jpg" alt=""></div>
+      <div class="tghead-info">
+        <b id="tghead-name">шеф | новогодни</b>
+        <span class="tghead-status"><i>●</i> <span data-i18n="chat-status">онлайн</span></span>
+      </div>
+      <button class="tgqr" id="tgqr" type="button">QR</button>
+    </div>
+    <div class="tgbody" id="tgbody">
+      <div class="bubble sys" data-i18n="chat-hello">Привет! Напиши мне — откроется мой Telegram с готовым текстом</div>
+    </div>
+    <div class="tginput">
+      <textarea id="tgtext" rows="1" data-i18n-ph="chat-ph" placeholder="Сообщение…"></textarea>
+      <button class="tgsend" id="tgsend" type="button" aria-label="Отправить">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+    <div class="tgfoot" id="tgfoot"></div>
+  </div>
+</div>
+
 <script>
 (function(){
   var I18N = {
-    ru: {tg:'Написать в личку', 'tg-s':'QR или сразу переход', 'gh-s':'код и проекты', scan:'Сканируй или жми', go:'Перейти в Telegram', close:'Закрыть', copied:'скопировано ✓'},
-    en: {tg:'Message me', 'tg-s':'QR or direct link', 'gh-s':'code & projects', scan:'Scan or tap', go:'Open Telegram', close:'Close', copied:'copied ✓'},
-    uk: {tg:'Написати в особисті', 'tg-s':'QR або одразу перехід', 'gh-s':'код і проєкти', scan:'Скануй або тисни', go:'Перейти в Telegram', close:'Закрити', copied:'скопійовано ✓'},
-    pl: {tg:'Napisz do mnie', 'tg-s':'QR albo przejdź od razu', 'gh-s':'kod i projekty', scan:'Zeskanuj lub kliknij', go:'Otwórz Telegram', close:'Zamknij', copied:'skopiowano ✓'},
-    be: {tg:'Напісаць у асабістыя', 'tg-s':'QR ці адразу пераход', 'gh-s':'код і праекты', scan:'Скануй ці націсні', go:'Перайсці ў Telegram', close:'Закрыць', copied:'скапіявана ✓'}
+    ru: {tg:'Написать в личку', 'tg-s':'QR или сразу переход', 'gh-s':'код и проекты', scan:'Сканируй или жми', go:'Перейти в Telegram', close:'Закрыть', copied:'скопировано ✓',
+         'chat-hello':'Привет! Напиши мне — откроется мой Telegram с готовым текстом', 'chat-ph':'Сообщение…', 'chat-status':'онлайн', 'chat-hint':'Текст скопирован — вставь в чат и отправь', 'chat-send':'Отправить'},
+    en: {tg:'Message me', 'tg-s':'QR or direct link', 'gh-s':'code & projects', scan:'Scan or tap', go:'Open Telegram', close:'Close', copied:'copied ✓',
+         'chat-hello':'Hi! Write me — my Telegram opens with your text ready', 'chat-ph':'Message…', 'chat-status':'online', 'chat-hint':'Text copied — paste it in the chat and send', 'chat-send':'Send'},
+    uk: {tg:'Написати в особисті', 'tg-s':'QR або одразу перехід', 'gh-s':'код і проєкти', scan:'Скануй або тисни', go:'Перейти в Telegram', close:'Закрити', copied:'скопійовано ✓',
+         'chat-hello':'Привіт! Напиши мені — відкриється мій Telegram із готовим текстом', 'chat-ph':'Повідомлення…', 'chat-status':'онлайн', 'chat-hint':'Текст скопійовано — встав у чат і надішли', 'chat-send':'Надіслати'},
+    pl: {tg:'Napisz do mnie', 'tg-s':'QR albo przejdź od razu', 'gh-s':'kod i projekty', scan:'Zeskanuj lub kliknij', go:'Otwórz Telegram', close:'Zamknij', copied:'skopiowano ✓',
+         'chat-hello':'Cześć! Napisz do mnie — Telegram otworzy się z gotowym tekstem', 'chat-ph':'Wiadomość…', 'chat-status':'online', 'chat-hint':'Tekst skopiowany — wklej na czacie i wyślij', 'chat-send':'Wyślij'},
+    be: {tg:'Напісаць у асабістыя', 'tg-s':'QR ці адразу пераход', 'gh-s':'код і праекты', scan:'Скануй ці націсні', go:'Перайсці ў Telegram', close:'Закрыць', copied:'скапіявана ✓',
+         'chat-hello':'Прывітанне! Напішы мне — адкрыецца мой Telegram з гатовым тэкстам', 'chat-ph':'Паведамленне…', 'chat-status':'онлайн', 'chat-hint':'Тэкст скапіявана — устаў у чат і адправі', 'chat-send':'Адправіць'}
   };
   var lang = 'ru';
   try { lang = localStorage.getItem('shq-lang') || 'ru'; } catch(e) {}
@@ -151,6 +200,8 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   function applyName(n){
     if (n) {
       pname.textContent = n;
+      var thn = document.getElementById('tghead-name');
+      if (thn) thn.textContent = n;
       try { localStorage.setItem('shq-name', n); } catch(e) {}
     }
   }
@@ -243,11 +294,13 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   var lb = document.getElementById('langbtn');
   var langmenu = document.getElementById('langmenu');
   function applyLang(animate){
-    var els = document.querySelectorAll('[data-i18n]');
+    var els = document.querySelectorAll('[data-i18n],[data-i18n-ph]');
     var touched = [];
     for (var i = 0; i < els.length; i++) {
       var k = els[i].dataset.i18n;
-      if (I18N[lang][k]) { els[i].textContent = I18N[lang][k]; touched.push(els[i]); }
+      if (k && I18N[lang][k]) { els[i].textContent = I18N[lang][k]; touched.push(els[i]); }
+      var pk = els[i].dataset.i18nPh;
+      if (pk && I18N[lang][pk]) els[i].placeholder = I18N[lang][pk];
     }
     document.documentElement.lang = lang;
     lb.textContent = lang.toUpperCase();
@@ -289,7 +342,24 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
   });
   applyLang(false);
 
-  // click to copy (with http fallback)
+  // copy util (with http fallback)
+  function copyText(t, cb){
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(t).then(cb, function(){ legacyCopy(t, cb); });
+    } else legacyCopy(t, cb);
+  }
+  function legacyCopy(t, cb){
+    var ta = document.createElement('textarea');
+    ta.value = t;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+    if (ok && cb) cb();
+  }
+
+  // chip copy
   var chip = document.getElementById('nick');
   var chipHTML = chip.innerHTML, copyTimer = null;
   function onCopied(){
@@ -302,35 +372,45 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
       chip.innerHTML = chipHTML;
     }, 1300);
   }
-  function legacyCopy(t){
-    var ta = document.createElement('textarea');
-    ta.value = t;
-    ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.focus(); ta.select();
-    var ok = false;
-    try { ok = document.execCommand('copy'); } catch(e) {}
-    document.body.removeChild(ta);
-    if (ok) onCopied();
-  }
-  function doCopy(){
-    var t = chip.dataset.copy;
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(t).then(onCopied, function(){ legacyCopy(t); });
-    } else legacyCopy(t);
-  }
-  chip.addEventListener('click', doCopy);
-  chip.addEventListener('contextmenu', function(e){ e.preventDefault(); doCopy(); });
+  chip.addEventListener('click', function(){ copyText(chip.dataset.copy, onCopied); });
+  chip.addEventListener('contextmenu', function(e){ e.preventDefault(); copyText(chip.dataset.copy, onCopied); });
 
-  // QR modal
+  // QR modal (from chat header)
   var modal = document.getElementById('qr');
-  document.getElementById('tgbtn').addEventListener('click', function(e){
-    e.preventDefault();
-    modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
-  });
   function closeQr(){ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); }
   modal.addEventListener('click', function(e){ if (e.target === modal) closeQr(); });
   document.getElementById('qrclose').addEventListener('click', closeQr);
-  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeQr(); });
+
+  // telegram chat panel
+  var tgModal = document.getElementById('tgchat');
+  document.getElementById('tgbtn').addEventListener('click', function(e){
+    e.preventDefault();
+    tgModal.classList.add('show'); tgModal.setAttribute('aria-hidden','false');
+  });
+  function closeTg(){ tgModal.classList.remove('show'); tgModal.setAttribute('aria-hidden','true'); }
+  tgModal.addEventListener('click', function(e){ if (e.target === tgModal) closeTg(); });
+  document.getElementById('tgqr').addEventListener('click', function(){
+    modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
+  });
+  var tgbody = document.getElementById('tgbody');
+  var tgtext = document.getElementById('tgtext');
+  var tgfoot = document.getElementById('tgfoot');
+  function sendMsg(){
+    var t = (tgtext.value || '').trim();
+    if (!t) return;
+    copyText(t, function(){
+      tgfoot.textContent = I18N[lang]['chat-hint'];
+    });
+    var b = document.createElement('div');
+    b.className = 'bubble me'; b.textContent = t;
+    tgbody.appendChild(b);
+    tgbody.scrollTop = tgbody.scrollHeight;
+    tgtext.value = '';
+    window.open('https://t.me/SecretSharkQ', '_blank');
+  }
+  document.getElementById('tgsend').addEventListener('click', sendMsg);
+  tgtext.addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendMsg(); } });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ closeQr(); closeTg(); } });
 
   // snow (dark theme only, toggle below theme button)
   var snowCanvas = document.createElement('canvas');
