@@ -43,7 +43,8 @@ html[data-theme=light] #snow,html[data-theme=light] #meteor,html[data-theme=ligh
 html[data-theme=light] #nyd{display:none}
 html[data-theme=light] #sbtn,html[data-theme=light] .snowbtn{display:none!important}
 .ava{width:112px;height:112px;border-radius:50%;margin:0 auto 18px;display:block;padding:3px;background:linear-gradient(90deg,#ff5ea8,#ff9e57,#57c7ff,#b06bff,#ff5ea8);background-size:300% 100%;animation:nameflow 9s linear infinite;box-shadow:0 0 34px var(--ringglow)}
-.ava img{width:100%;height:100%;border-radius:50%;display:block;object-fit:cover;background:#1c2937}
+.ava img{width:100%;height:100%;border-radius:50%;display:block;object-fit:cover;background:#1c2937;-webkit-user-drag:none;user-drag:none;pointer-events:none}
+a,img,svg{-webkit-user-drag:none}
 /* курсор- accompany: плавное кольцо + точка */
 .cursor-ring{position:fixed;top:0;left:0;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ac);pointer-events:none;z-index:9998;opacity:0;transition:opacity .3s ease,background-color .25s ease,border-color .25s ease;will-change:transform;background:rgba(41,151,255,0)}
 .cursor-dot{position:fixed;top:0;left:0;width:5px;height:5px;border-radius:50%;background:var(--ac);pointer-events:none;z-index:9999;opacity:0;transition:opacity .3s ease;will-change:transform}
@@ -167,7 +168,7 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
     </div>
   </div>
 
-  <div class="ava"><img src="avatar.jpg" alt="" referrerpolicy="no-referrer"></div>
+  <div class="ava"><img src="avatar.jpg" alt="" draggable="false" referrerpolicy="no-referrer"></div>
   <h1 id="pname" data-text="шеф | новогодни"><span class="pname-t">шеф | новогодни</span></h1>
   <button class="user" id="nick" type="button" data-copy="@SecretSharkQ">@SecretSharkQ</button>
 
@@ -214,6 +215,8 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
   };
   var lang = 'ru';
   try { lang = localStorage.getItem('shq-lang') || 'ru'; } catch(e) {}
+
+  document.addEventListener('dragstart', function(e){ e.preventDefault(); });
 
   // clean junk hash from url
   if (location.hash) { try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {} }
