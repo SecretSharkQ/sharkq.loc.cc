@@ -644,44 +644,16 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
     }
     if (confRAF === 0) confRAF = requestAnimationFrame(tickConf);
   }
-  // jingle bells: колокольный синтез, играет ~15с на клик по аве в зимнем режиме
-  var jbState = null;
-  function jbNote(ac, dest, f, t, dur){
-    var o1 = ac.createOscillator(), o2 = ac.createOscillator(), g = ac.createGain(), g2 = ac.createGain();
-    o1.type = 'sine'; o2.type = 'sine';
-    o1.frequency.value = f; o2.frequency.value = f * 2.4;
-    g2.gain.value = 0.26;
-    o1.connect(g); o2.connect(g2); g2.connect(g); g.connect(dest);
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.55, t + 0.012);
-    g.gain.exponentialRampToValueAtTime(0.0002, t + Math.min(dur * 1.5, 1.15));
-    o1.start(t); o2.start(t);
-    o1.stop(t + 1.4); o2.stop(t + 1.4);
-  }
+  // jingle bells: настоящая песня (Kevin MacLeod, CC BY), играет 15с на клик по аве в зимнем режиме
+  var jbAudio = null, jbTimer = null;
   function playJingle(){
-    try {
-      if (jbState) { clearTimeout(jbState.timer); try { jbState.ac.close(); } catch(e){} jbState = null; }
-      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-      var ac = new AC();
-      var master = ac.createGain(); master.gain.value = 0.42; master.connect(ac.destination);
-      var NOTE = { C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.0 };
-      // «джингл белс»: длительности в восьмых, темп подобран под ~15с
-      var seq = [
-        ['E4',1],['E4',1],['E4',2],
-        ['E4',1],['E4',1],['E4',2],
-        ['E4',1],['G4',1],['C4',1],['D4',1],['E4',4],
-        ['F4',1],['F4',1],['F4',1],['F4',2],
-        ['F4',1],['E4',1],['E4',1],['E4',3],
-        ['E4',1],['D4',1],['D4',1],['E4',1],['D4',4]
-      ];
-      var e8 = 0.43, cur = ac.currentTime + 0.05;
-      seq.forEach(function(n){
-        jbNote(ac, master, NOTE[n[0]], cur, n[1] * e8 * 0.92);
-        cur += n[1] * e8;
-      });
-      var stopAt = cur - ac.currentTime + 0.2;
-      jbState = { ac: ac, timer: setTimeout(function(){ try { ac.close(); } catch(e){} jbState = null; }, Math.min(stopAt, 15.5) * 1000) };
-    } catch(e){}
+    if (jbAudio) { jbAudio.pause(); jbAudio.currentTime = 0; }
+    clearTimeout(jbTimer);
+    jbAudio = jbAudio || new Audio('jingle.mp3');
+    jbAudio.volume = 0.75;
+    jbAudio.currentTime = 0;
+    var p = jbAudio.play(); if (p && p.catch) p.catch(function(){});
+    jbTimer = setTimeout(function(){ jbAudio.pause(); jbAudio.currentTime = 0; }, 15000);
   }
   document.querySelector('.ava').addEventListener('click', function(){
     if (!snowOn) return;
@@ -695,7 +667,7 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
 </script>
 <footer style="position:fixed; left:0; right:0; bottom:0; text-align:center; font-size:12px; padding:12px; pointer-events:none; z-index:10;">
   <div id="nyd"></div>
-  <div style="opacity:0.5;">© 2026 SecretSharkQ. Все права защищены.</div>
+  <div style="opacity:0.5;">© 2026 SecretSharkQ. Все права защищены. Песня: Jingle Bells — <a href="https://incompetech.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Kevin MacLeod</a> (CC BY 3.0)</div>
 </footer>
 </body>
 </html>
