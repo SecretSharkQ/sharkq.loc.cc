@@ -37,6 +37,11 @@ html .themebtn .sun{display:block}
 html .themebtn .moon{display:none}
 html[data-theme=light] .themebtn .sun{display:none}
 html[data-theme=light] .themebtn .moon{display:block}
+/* в светлой теме зимние украшения скрыты: гирлянда, снег, метеоры, счётчик, кнопка снега */
+html[data-theme=light] #garland,html[data-theme=light] .garland{display:none}
+html[data-theme=light] #snow,html[data-theme=light] #meteor,html[data-theme=light] #confetti{display:none}
+html[data-theme=light] #nyd{display:none}
+html[data-theme=light] #sbtn,html[data-theme=light] .snowbtn{display:none!important}
 .ava{width:112px;height:112px;border-radius:50%;margin:0 auto 18px;display:block;padding:3px;background:linear-gradient(90deg,#ff5ea8,#ff9e57,#57c7ff,#b06bff,#ff5ea8);background-size:300% 100%;animation:nameflow 9s linear infinite;box-shadow:0 0 34px var(--ringglow)}
 .ava img{width:100%;height:100%;border-radius:50%;display:block;object-fit:cover;background:#1c2937}
 /* курсор- accompany: плавное кольцо + точка */
