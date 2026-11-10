@@ -107,6 +107,8 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 #pname::before{content:attr(data-text);position:absolute;top:3px;left:0;width:100%;color:rgba(0,0,0,.9);text-shadow:0 1px 2px rgba(0,0,0,.55),0 4px 10px rgba(0,0,0,.5),0 10px 28px rgba(0,0,0,.55);z-index:0;pointer-events:none}
 .pname-t{position:relative;z-index:1;background:linear-gradient(90deg,#ff5ea8,#ff9e57,#57c7ff,#b06bff,#ff5ea8);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:nameflow 9s linear infinite}
 @keyframes nameflow{0%{background-position:0% 0}100%{background-position:-300% 0}}
+html[data-theme=light] #pname::before{color:rgba(29,29,31,.06);text-shadow:0 1px 1px rgba(29,29,31,.1),0 3px 8px rgba(29,29,31,.07),0 8px 20px rgba(29,29,31,.06)}
+html[data-theme=light] #pname{filter:drop-shadow(0 1px 2px rgba(29,29,31,.12)) drop-shadow(0 4px 14px rgba(255,110,160,.15))}
 /* garland: cable + hanging bulbs */
 .garland{position:fixed;top:-2px;left:-10px;right:-10px;height:60px;z-index:9;pointer-events:none;overflow:visible;transition:opacity .5s ease}
 .garland .bulb{pointer-events:auto;cursor:pointer}
