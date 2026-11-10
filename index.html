@@ -59,8 +59,8 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 .btn.duo .half{flex:1;min-width:0;display:flex;align-items:center;gap:9px;padding:13px 13px;text-decoration:none;color:#fff;font-size:13.5px;font-weight:500;position:relative}
 .btn.duo .half.tg{z-index:2}
 .btn.duo .half.gh{z-index:1}
-.btn.duo .half.tg::before{content:'';position:absolute;z-index:-1;top:-2px;bottom:-2px;left:-70px;right:-16px;transform:skewX(-12deg);background:linear-gradient(135deg,#2aabee,#1c86c6);border-right:2px solid rgba(255,255,255,.38);box-shadow:3px 0 12px rgba(5,15,25,.35);transition:filter .12s ease}
-.btn.duo .half.gh::before{content:'';position:absolute;z-index:-1;top:-2px;bottom:-2px;left:-16px;right:-70px;transform:skewX(-12deg);background:linear-gradient(135deg,#24292f,#0d1117);transition:filter .12s ease}
+.btn.duo .half.tg::before{content:'';position:absolute;z-index:-1;top:-2px;bottom:-2px;left:-70px;right:0;transform:skewX(-12deg);background:linear-gradient(135deg,#2aabee,#1c86c6);border-right:2px solid rgba(255,255,255,.38);box-shadow:3px 0 12px rgba(5,15,25,.35);transition:filter .12s ease}
+.btn.duo .half.gh::before{content:'';position:absolute;z-index:-1;top:-2px;bottom:-2px;left:0;right:-70px;transform:skewX(-12deg);background:linear-gradient(135deg,#24292f,#0d1117);transition:filter .12s ease}
 .btn.duo .half.tg:hover::before{filter:brightness(1.13)}
 .btn.duo .half.gh:hover::before{filter:brightness(1.2)}
 .btn.duo .half .txt{flex:1;text-align:center;min-width:0;position:relative}
