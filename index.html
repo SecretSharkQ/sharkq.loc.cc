@@ -468,10 +468,8 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
   sbtn.addEventListener('click', function(){
     snowOn = !snowOn;
     try { localStorage.setItem('shq-snow', snowOn ? 'on' : 'off'); } catch(e) {}
-    if (snowOn) loadYTApi();
     snowBtnUI(); updateSnow(); updateGarland();
   });
-  if (snowOn) loadYTApi();
   snowBtnUI();
   document.addEventListener('visibilitychange', function(){
     if (snowRunning && !document.hidden){ cancelAnimationFrame(snowRAF); snowRAF = requestAnimationFrame(tickSnow); }
@@ -648,62 +646,28 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
   }
   /*
     Источник песни: YouTube — aaaaddell «jingle bells rock» (video id uHxYkwdlzr4).
-    Проигрывание через официальный YouTube IFrame Player API: старт на 0:06, 15 секунд.
-    Фолбэк если YouTube недоступен — jingle.mp3 (Kevin MacLeod, CC BY 3.0, incompetech.com).
+    Файл jingle-yt.m4a скачан с этого видео (yt-dlp) и лежит в корне репозитория:
+    сайт играет локально — старт на 0:06, длительность 15 секунд.
+    Фолбэк при сбое — jingle.mp3 (Kevin MacLeod, incompetech.com, CC BY 3.0).
   */
-  var ytApiStarted = false, ytPlayer = null, ytPending = false, jbTimer = null, jbAudio = null;
-  function loadYTApi(){
-    if (ytApiStarted) return;
-    ytApiStarted = true;
-    var s = document.createElement('script');
-    s.src = 'https://www.youtube.com/iframe_api';
-    document.head.appendChild(s);
-    window.onYouTubeIframeAPIReady = function(){
-      try {
-        ytPlayer = new YT.Player('ytsound', {
-          videoId: 'uHxYkwdlzr4', width: 120, height: 68,
-          playerVars: { autoplay: 0, controls: 0, disablekb: 1, playsinline: 1, rel: 0 },
-          events: {
-            onReady: function(){ if (ytPending) startYT(); },
-            onError: function(){ ytPlayer = null; }
-          }
-        });
-      } catch(e){ ytPlayer = null; }
-    };
-  }
-  function startYT(){
-    try {
-      ytPlayer.seekTo(6, true);
-      ytPlayer.unMute();
-      ytPlayer.setVolume(80);
-      ytPlayer.playVideo();
-    } catch(e) { return false; }
-    return true;
-  }
-  function playMp3(){
-    if (!jbAudio) jbAudio = new Audio('jingle.mp3');
-    jbAudio.volume = 0.75; jbAudio.currentTime = 0;
-    var p = jbAudio.play(); if (p && p.catch) p.catch(function(){});
-    clearTimeout(jbTimer);
-    jbTimer = setTimeout(function(){ jbAudio.pause(); jbAudio.currentTime = 0; }, 15000);
-  }
+  var jb = null, jbAudio = null, jbTimer = null;
   function playJingle(){
-    loadYTApi();
-    var ok = false;
-    if (ytPlayer) ok = startYT();
-    else ytPending = true; // ждём onReady — старт автоматически
-    // предохранитель: за 1.4с YouTube не завёлся — локальный mp3
-    setTimeout(function(){
-      var st = -1;
-      try { st = ytPlayer ? ytPlayer.getPlayerState() : -1; } catch(e){}
-      if (st !== 1 && !(jbAudio && !jbAudio.paused)) playMp3();
-    }, 1400);
+    if (!jb) jb = new Audio('jingle-yt.m4a');
     clearTimeout(jbTimer);
-    jbTimer = setTimeout(function(){
-      try { if (ytPlayer) ytPlayer.pauseVideo(); } catch(e){}
-      try { if (jbAudio) { jbAudio.pause(); jbAudio.currentTime = 0; } } catch(e){}
-    }, 15000);
+    try { jb.pause(); } catch(e){}
+    try { jb.currentTime = 6; } catch(e){ jb.currentTime = 0; }
+    jb.volume = 0.95;
+    var p = jb.play();
+    if (p && p.catch) p.catch(function(){
+      try {
+        if (!jbAudio) jbAudio = new Audio('jingle.mp3');
+        jbAudio.volume = 0.75; jbAudio.currentTime = 0;
+        var p2 = jbAudio.play(); if (p2 && p2.catch) p2.catch(function(){});
+      } catch(e){}
+    });
+    jbTimer = setTimeout(function(){ try { jb.pause(); } catch(e){} }, 15000);
   }
+
   document.querySelector('.ava').addEventListener('click', function(){
     if (!snowOn) return;
     var r = this.getBoundingClientRect();
@@ -715,7 +679,6 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
 })();
 </script>
 <footer style="position:fixed; left:0; right:0; bottom:0; text-align:center; font-size:12px; padding:12px; pointer-events:none; z-index:10;">
-  <div id="ytsound" style="position:fixed; right:-200px; bottom:-80px; width:120px; height:68px; opacity:.01; pointer-events:none;"></div>
   <div id="nyd"></div>
   <div style="opacity:0.5;">© 2026 SecretSharkQ. Все права защищены.</div>
 </footer>
