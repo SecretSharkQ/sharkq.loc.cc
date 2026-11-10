@@ -644,7 +644,12 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
     }
     if (confRAF === 0) confRAF = requestAnimationFrame(tickConf);
   }
-  // jingle bells: настоящая песня (Kevin MacLeod, CC BY), играет 15с на клик по аве в зимнем режиме
+  /*
+    Музыка: «Jingle Bells» — Kevin MacLeod (incompetech.com)
+    Лицензия: Creative Commons BY 3.0 — https://creativecommons.org/licenses/by/3.0/
+    Файл: jingle.mp3 (в корне репозитория). Источник указан здесь, в коде.
+  */
+  // jingle bells: настоящая песня, играет 15с на клик по аве в зимнем режиме
   var jbAudio = null, jbTimer = null;
   function playJingle(){
     if (jbAudio) { jbAudio.pause(); jbAudio.currentTime = 0; }
@@ -667,7 +672,7 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
 </script>
 <footer style="position:fixed; left:0; right:0; bottom:0; text-align:center; font-size:12px; padding:12px; pointer-events:none; z-index:10;">
   <div id="nyd"></div>
-  <div style="opacity:0.5;">© 2026 SecretSharkQ. Все права защищены. Песня: Jingle Bells — <a href="https://incompetech.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Kevin MacLeod</a> (CC BY 3.0)</div>
+  <div style="opacity:0.5;">© 2026 SecretSharkQ. Все права защищены.</div>
 </footer>
 </body>
 </html>
