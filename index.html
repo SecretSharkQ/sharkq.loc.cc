@@ -55,11 +55,14 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 .btn.tg:hover{box-shadow:0 8px 26px rgba(42,171,238,.35)}
 .btn.gh{background:linear-gradient(135deg,#24292f,#0d1117);border-color:#30363d;color:#fff}
 .btn.gh:hover{box-shadow:0 8px 26px rgba(36,41,47,.6)}
+.btn.rbx{background:linear-gradient(135deg,#e5443a,#b3271e);border-color:rgba(255,255,255,.22);color:#fff}
+.btn.rbx:hover{box-shadow:0 8px 26px rgba(226,35,26,.4)}
 .btn .ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none;color:#fff}
 .btn .ic svg{display:block}
 .btn small{display:block;color:var(--mut);font-size:12px;font-weight:400;margin-top:1px}
-.btn.tg small,.btn.gh small{color:rgba(255,255,255,.72)}
+.btn.tg small,.btn.gh small,.btn.rbx small{color:rgba(255,255,255,.72)}
 .ic-tg{background:rgba(255,255,255,.16)}
+.ic-rbx{background:rgba(255,255,255,.18)}
 .ic-gh{background:rgba(255,255,255,.14)}
 .btn .arrow{margin-left:auto;color:var(--mut)}
 .modal{position:fixed;inset:0;background:rgba(5,12,20,.55);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10}
@@ -82,6 +85,12 @@ h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 @keyframes nameflow{0%{background-position:0% 0}100%{background-position:-300% 0}}
 /* garland: cable + hanging bulbs */
 .garland{position:fixed;top:-2px;left:-10px;right:-10px;height:60px;z-index:9;pointer-events:none;overflow:visible;transition:opacity .5s ease}
+.garland .bulb{pointer-events:auto;cursor:pointer}
+.garland .bulb.out{cursor:default}
+.garland .bulb:not(.out):active{transform:scale(1.15)}
+.garland .bulb.out .glass{background:#3a3a40;box-shadow:none;filter:none;opacity:.55;animation:none}
+@keyframes gpop{from{transform:scale(1.3)}to{transform:scale(1)}}
+.garland .bulb.popping{animation:gpop .19s ease-out}
 .garland svg{position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible}
 .garland .bulb{display:block;position:absolute;width:12px;transform-origin:50% 0;animation:gswing var(--sd,3.4s) ease-in-out infinite alternate;animation-delay:var(--bd,0s)}
 .garland .cap{display:block;width:6px;height:7px;margin:0 auto;border-radius:2px;background:linear-gradient(180deg,#3a3a40,#151518);box-shadow:0 1px 2px rgba(0,0,0,.55)}
@@ -129,6 +138,11 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
       <span class="txt"><span data-i18n="tg">Написать в личку</span><small data-i18n="tg-s">QR или сразу переход</small></span>
       <span class="arrow">→</span>
     </a>
+    <a class="btn rbx" href="https://www.roblox.com/users/5608722082/profile" target="_blank" rel="noopener">
+      <span class="ic ic-rbx"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M18.926 23.998L0 18.892L5.075.002L24 5.108ZM15.348 10.09l-5.282-1.453l-1.414 5.273l5.282 1.453z"/></svg></span>
+      <span class="txt"><span data-i18n="rbx">Roblox</span><small data-i18n="rbx-s">мой аккаунт</small></span>
+      <span class="arrow">→</span>
+    </a>
     <a class="btn gh" href="https://github.com/SecretSharkQ" target="_blank" rel="noopener">
       <span class="ic ic-gh"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span>
       <span class="txt">GitHub<small data-i18n="gh-s">код и проекты</small></span>
@@ -154,11 +168,11 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
 <script>
 (function(){
   var I18N = {
-    ru: {tg:'Telegram', 'tg-s':'написать в личку', 'gh-s':'код и проекты', scan:'Сканируй или жми', go:'Перейти в Telegram', close:'Закрыть', copied:'скопировано ✓'},
-    en: {tg:'Telegram', 'tg-s':'write me privately', 'gh-s':'code & projects', scan:'Scan or tap', go:'Open Telegram', close:'Close', copied:'copied ✓'},
-    uk: {tg:'Telegram', 'tg-s':'написати в особисті', 'gh-s':'код і проєкти', scan:'Скануй або тисни', go:'Перейти в Telegram', close:'Закрити', copied:'скопійовано ✓'},
-    pl: {tg:'Telegram', 'tg-s':'napisz prywatnie', 'gh-s':'kod i projekty', scan:'Zeskanuj lub kliknij', go:'Otwórz Telegram', close:'Zamknij', copied:'skopiowano ✓'},
-    be: {tg:'Telegram', 'tg-s':'напісаць у асабістыя', 'gh-s':'код і праекты', scan:'Скануй ці націсні', go:'Перайсці ў Telegram', close:'Закрыць', copied:'скапіявана ✓'}
+    ru: {tg:'Telegram', 'tg-s':'написать в личку', 'rbx-s':'мой аккаунт', 'gh-s':'код и проекты', scan:'Сканируй или жми', go:'Перейти в Telegram', close:'Закрыть', copied:'скопировано ✓'},
+    en: {tg:'Telegram', 'tg-s':'write me privately', 'rbx-s':'my account', 'gh-s':'code & projects', scan:'Scan or tap', go:'Open Telegram', close:'Close', copied:'copied ✓'},
+    uk: {tg:'Telegram', 'tg-s':'написати в особисті', 'rbx-s':'мій акаунт', 'gh-s':'код і проєкти', scan:'Скануй або тисни', go:'Перейти в Telegram', close:'Закрити', copied:'скопійовано ✓'},
+    pl: {tg:'Telegram', 'tg-s':'napisz prywatnie', 'rbx-s':'moje konto', 'gh-s':'kod i projekty', scan:'Zeskanuj lub kliknij', go:'Otwórz Telegram', close:'Zamknij', copied:'skopiowano ✓'},
+    be: {tg:'Telegram', 'tg-s':'напісаць у асабістыя', 'rbx-s':'мой акаўнт', 'gh-s':'код і праекты', scan:'Скануй ці націсні', go:'Перайсці ў Telegram', close:'Закрыць', copied:'скапіявана ✓'}
   };
   var lang = 'ru';
   try { lang = localStorage.getItem('shq-lang') || 'ru'; } catch(e) {}
@@ -463,6 +477,20 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
         glass.className = 'glass';
         bulb.appendChild(cap);
         bulb.appendChild(glass);
+        // клик: лампочка перегорает и загорается новым цветом
+        bulb._settle = 0;
+        bulb.addEventListener('click', function(e){
+          var blb = e.currentTarget;
+          if (blb.classList.contains('out')) return;
+          blb.classList.add('out');
+          clearTimeout(blb._settle);
+          blb._settle = setTimeout(function(){
+            blb.style.setProperty('--c', GCOLORS[Math.floor(Math.random() * GCOLORS.length)]);
+            blb.classList.remove('out');
+            blb.classList.add('popping');
+            setTimeout(function(){ blb.classList.remove('popping'); }, 210);
+          }, 480 + Math.random() * 420);
+        });
         gl.appendChild(bulb);
       }
     }
