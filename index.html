@@ -40,11 +40,9 @@ html[data-theme=light] .themebtn .moon{display:block}
 .ava{width:112px;height:112px;border-radius:50%;margin:0 auto 18px;display:block;padding:3px;background:linear-gradient(90deg,#ff5ea8,#ff9e57,#57c7ff,#b06bff,#ff5ea8);background-size:300% 100%;animation:nameflow 9s linear infinite;box-shadow:0 0 34px var(--ringglow)}
 .ava img{width:100%;height:100%;border-radius:50%;display:block;object-fit:cover;background:#1c2937}
 /* курсор- accompany: плавное кольцо + точка */
-.cursor-ring{position:fixed;top:0;left:0;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ac);pointer-events:none;z-index:9998;opacity:0;transition:opacity .3s ease,background-color .25s ease;will-change:transform;background:rgba(41,151,255,0)}
+.cursor-ring{position:fixed;top:0;left:0;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ac);pointer-events:none;z-index:9998;opacity:0;transition:opacity .3s ease,background-color .25s ease,border-color .25s ease;will-change:transform;background:rgba(41,151,255,0)}
 .cursor-dot{position:fixed;top:0;left:0;width:5px;height:5px;border-radius:50%;background:var(--ac);pointer-events:none;z-index:9999;opacity:0;transition:opacity .3s ease;will-change:transform}
-.cursor-ring.press{background:rgba(41,151,255,.14)}
-.cursor-ripple{position:fixed;width:14px;height:14px;border-radius:50%;border:1.5px solid var(--ac);pointer-events:none;z-index:9997;opacity:.8;animation:curripple .55s ease-out forwards}
-@keyframes curripple{from{transform:translate(-50%,-50%) scale(1);opacity:.8}to{transform:translate(-50%,-50%) scale(4.4);opacity:0}}
+.cursor-ring.press{background:rgba(41,151,255,.18);border-color:#ff5ea8}
 @media (hover:none){.cursor-ring,.cursor-dot{display:none}}
 h1{font-size:26px;font-weight:600;letter-spacing:.2px}
 .user{position:relative;display:inline-flex;align-items:center;gap:6px;margin:8px auto 26px;padding:5px 14px;border:1px solid var(--line);border-radius:999px;background:var(--chipbg);color:var(--ac);text-decoration:none;font-size:14px;user-select:none;-webkit-user-select:none;cursor:pointer;transition:background .2s}
@@ -389,27 +387,22 @@ html[data-theme=light] .garland .glass{box-shadow:0 0 6px 1px var(--c)}
     var curRing = document.createElement('div'); curRing.className = 'cursor-ring';
     var curDot = document.createElement('div'); curDot.className = 'cursor-dot';
     document.body.appendChild(curRing); document.body.appendChild(curDot);
-    var cmx = innerWidth / 2, cmy = innerHeight / 2, crx = cmx, cry = cmy, cdx = cmx, cdy = cmy, cshown = false;
+    var cmx = innerWidth / 2, cmy = innerHeight / 2, crx = cmx, cry = cmy, cdx = cmx, cdy = cmy, cshown = false, pressed = false, pscale = 1;
     document.addEventListener('mousemove', function(e){
       cmx = e.clientX; cmy = e.clientY;
       if (!cshown) { crx = cdx = cmx; cry = cdy = cmy; cshown = true; curRing.style.opacity = '1'; curDot.style.opacity = '1'; }
     });
     document.addEventListener('mouseleave', function(){ curRing.style.opacity = '0'; curDot.style.opacity = '0'; cshown = false; });
     document.addEventListener('mouseenter', function(){ if (cshown) { curRing.style.opacity = '1'; curDot.style.opacity = '1'; } else { cshown = false; } });
-    document.addEventListener('mousedown', function(e){
-      curRing.classList.add('press');
-      var rp = document.createElement('div'); rp.className = 'cursor-ripple';
-      rp.style.left = e.clientX + 'px'; rp.style.top = e.clientY + 'px';
-      document.body.appendChild(rp);
-      rp.addEventListener('animationend', function(){ rp.remove(); });
-      document.addEventListener('mouseup', function up(){ curRing.classList.remove('press'); document.removeEventListener('mouseup', up); });
-    });
+    document.addEventListener('mousedown', function(){ curRing.classList.add('press'); pressed = true; });
+    document.addEventListener('mouseup', function(){ curRing.classList.remove('press'); pressed = false; });
     (function curLoop(){
       var k = 0.16;
       crx += (cmx - crx) * k; cry += (cmy - cry) * k;
       cdx += (cmx - cdx) * 0.38; cdy += (cmy - cdy) * 0.38;
       var sp = Math.min(Math.hypot(cmx - crx, cmy - cry) / 140, 1);
-      curRing.style.transform = 'translate(' + (crx - 13) + 'px,' + (cry - 13) + 'px) scale(' + (1 + sp * 0.35) + ')';
+      pscale += ((pressed ? 0.68 : 1) - pscale) * 0.3;
+      curRing.style.transform = 'translate(' + (crx - 13) + 'px,' + (cry - 13) + 'px) scale(' + (1 + sp * 0.35) * pscale + ')';
       curDot.style.transform = 'translate(' + (cdx - 2.5) + 'px,' + (cdy - 2.5) + 'px)';
       requestAnimationFrame(curLoop);
     })();
